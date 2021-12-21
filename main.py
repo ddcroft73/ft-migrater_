@@ -89,8 +89,9 @@ def change_spath() -> None:
         return
     if new_spath == curr_spath_label.cget('text'):
         return
-
     config.change_spath(new_spath)
+    # update the spath variable in the Json class since a change was just made
+    config.refresh_data()
     curr_spath_label.configure(text=new_spath)
     file_browse.update_view(new_spath)
 
@@ -112,7 +113,7 @@ def view_log() -> None:
         showinfo("No Such File.", "No log has been created yet, or it was deleted.")    
 
 def number_files() -> str:
-    # kind of a lot to just get the file numbers, but... only need it once
+    # So the user knows how many files are about to be moved.
     data = ConfigureJson.get_data(JSON_FILE,DOWNLOADS_PATH)
     spath = list(data.keys())[0]
     types = list(data[spath].keys()) 
@@ -142,17 +143,18 @@ def curr_path_changed(event=None):
     file_browse.update_view(spath)
 
 def filetype_changed(event=None):
-    config.show_instructions('type', file_type.get())
-    config.instruction_report(file_type.get(), destination.get())
-
+    _type = file_type.get()
+    _destination =  destination.get()
+    if _type != "":
+       config.show_instructions(_type)
+       config.instruction_report(_type, _destination)
+    
 def type_destination_changed(event=None):
-    config.show_instructions('destination', destination.get())
-    config.instruction_report(file_type.get(), destination.get())
     file_browse.update_view(destination.get())
 
 
 """ FileView class
-treeview w/bundled widgets - DCroft (HobblinCobbler) 12Nov2021
+treeview w/bundled widgets - DCroft (HobblinCobbler) 12Dec2021
 Handles click selection of file and double click selection of directory
 HAndles all loading, saving, manipulation of path information used to populate
 and run the treeView, and combobox at the top to deliver the paths 
@@ -288,7 +290,7 @@ class FileView(object):
            # only concerened with instructions for filetype in the spath
            if not os.path.isfile(self.curr_path) or getdir_only(self.curr_path) == curr_spath_label.cget('text'):
               filetype_combo.set(getfile_ext(self.curr_path))
-              config.show_instructions('type', file_type.get())
+              config.show_instructions(file_type.get())
 
     def __set_destination_directory(self, event=None) -> None:
         destination = curr_spath_label.cget('text')
