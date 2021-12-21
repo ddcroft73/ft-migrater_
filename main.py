@@ -111,8 +111,19 @@ def view_log() -> None:
     else:
         showinfo("No Such File.", "No log has been created yet, or it was deleted.")    
 
+def number_files() -> str:
+    # kind of a lot to just get the file numbers, but... only need it once
+    data = ConfigureJson.get_data(JSON_FILE,DOWNLOADS_PATH)
+    spath = list(data.keys())[0]
+    types = list(data[spath].keys()) 
+    cnt = 0
+    for file in os.listdir(spath):
+        if getfile_ext(file) in types:
+           cnt+=1
+    return cnt
+
 def move_files() -> None: 
-    cont = askquestion("Confirm Request", "You are about to move __ files.\nDoth Thou wish to continue?")
+    cont = askquestion("Confirm Request", f"You are about to move {number_files()} files.\nDo you wish to continue?")
     if cont == 'yes':
         migrate.disperse_files()
 
