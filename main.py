@@ -30,13 +30,14 @@ import subprocess
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo, askquestion 
-
 from send2trash import send2trash
+import shutil
+
+# required classes
 from configurejson import *
 from toolTips import *
 from migrate import *
   
-
 # Refactor all code to use pathlib instead of os... or maybe just use it next time  
 DOWNLOADS_PATH = os.path.join(os.getenv('USERPROFILE'), 'Downloads') 
 JSON_FILE = './instructions.json'   
@@ -44,17 +45,32 @@ JSON_FILE = './instructions.json'
 #----------------------------------------------------------------------------------------
 #  COMMAND BUTT0N EVENT FUNCTIONS
 #----------------------------------------------------------------------------------------
-def delete_file() -> None:    
+def _del_file(path: str) -> None:
     cont = ""
-    fname = label_selected.cget('text')
-    if os.path.isfile(fname):
-        cont =askquestion("Send to Recycle Bin", 
-                          "Are you are sure you want to delete: " + fname + "\n\nContinue?", 
-                          icon='question') 
+    cont =askquestion("Send to Recycle Bin", "Are you are sure you want to delete: " + path + "\n\nContinue?", icon='question') 
     if cont == 'yes':
-        send2trash(fname)
-        print("Restore from Recycle Bin, if you o'nt to.")
-        file_browse.update_view(getdir_only(fname)) 
+        send2trash(path)
+        file_browse.update_view(getdir_only(path)) 
+
+def _del_directory(path: str) -> None:
+    cont = ""
+    cont =askquestion("Delete directory", "Are you are sure you want to delete: " + path + " \nand all it's contents? \nThis cannot be undone. \n\nContinue?", icon='question') 
+    if cont == 'yes':
+        shutil.rmtree(path)
+        # back step to the parent directory
+        parent = os.path.abspath(path)
+        file_browse.update_view(getdir_only(parent))
+
+def delete_path() -> None:  
+    path = label_selected.cget('text')
+    if label_selected.cget('text') == "":
+        status_report(status_label," Nothing to delete.")
+        return
+    
+    if os.path.isfile(path):
+        _del_file(path)        
+    else:
+        _del_directory(path)
 
 def save() -> None:        
     filetype = filetype_combo.get()
@@ -333,7 +349,7 @@ label_selected.place(height=23, width=575, x=(10), y=225)
 CreateToolTip(label_selected,"The current directory being sorted.")
 # 
 # File Delete Button
-del_file_button = ttk.Button(main_win, text="Delete", command=delete_file)   
+del_file_button = ttk.Button(main_win, text="Delete", command=delete_path)   
 del_file_button.place(width=60,height=24, x=525, y=225)
 CreateToolTip(del_file_button, "Move file to Recycle Bin.") 
 #===================================== END SELECTION ================================================================
