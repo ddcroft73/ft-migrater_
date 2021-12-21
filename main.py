@@ -47,7 +47,7 @@ JSON_FILE = './instructions.json'
 def delete_file() -> None:    
     cont = ""
     fname = label_selected.cget('text')
-    if file_browse.isfile(fname):
+    if os.path.isfile(fname):
         cont =askquestion("Send to Recycle Bin", 
                           "Are you are sure you want to delete: " + fname + "\n\nContinue?", 
                           icon='question') 
@@ -56,17 +56,25 @@ def delete_file() -> None:
         print("Restore from Recycle Bin, if you o'nt to.")
         file_browse.update_view(getdir_only(fname)) 
 
-def save() -> None:    
+def save() -> None:        
     filetype = filetype_combo.get()
-    path = curr_spath_label.cget('text')
     destination = filetype_dest_combo.get()
-    config.update_data('add', ftype=filetype, spath=path, destination=destination)
+    if filetype == "" or destination == "": 
+        showinfo("Invalid Type or destination", "File type information cannot be blank.\nPlease enter or select a vaild file type (extension), and\or destination.",
+        icon="warning")
+    else:    
+        path = curr_spath_label.cget('text')
+        config.update_data('add', ftype=filetype, spath=path, destination=destination)
 
 # deletes the file type instructions
 def delete_type() -> None:
     filetype = filetype_combo.get()
     path = curr_spath_label.cget('text')
-    config.update_data('delete', ftype=filetype, spath=path)
+    if filetype == "" or destination == "": 
+        showinfo("Invalid Type or destination", "File type information cannot be blank.\nPlease enter or select a vaild file type (extension), and\or destination.",
+        icon="warning")
+    else: 
+        config.update_data('delete', ftype=filetype, spath=path)
 
 # clear dictionary
 def delete_all() -> None:
@@ -104,7 +112,7 @@ def view_log() -> None:
         showinfo("No Such File.", "No log has been created yet, or it was deleted.")    
 
 def move_files() -> None: 
-    cont = askquestion("Confirm Request", "You are about to move __ files.\nDo you wish to continue?")
+    cont = askquestion("Confirm Request", "You are about to move __ files.\nDoth Thou wish to continue?")
     if cont == 'yes':
         migrate.disperse_files()
 
@@ -275,10 +283,12 @@ class FileView(object):
         destination = curr_spath_label.cget('text')
         selection = self.__get_selected()
         if not os.path.isfile(selection):
-           if destination == selection:
-               showinfo("Same Destination", "Can't move to the same destination.\nIf you want to overlook a type, don't set any instructions.")
-           else:
+           if destination != selection:
                filetype_dest_combo.set(selection)
+               # Dont think this is necessary
+               """ showinfo("Same Destination", "Can't move to the same destination.\nIf you want to overlook a type, don't set any instructions.")
+           else:"""
+               
 
 #------------------------------------------------------------------
 #  START BULK GUI CODE..  
