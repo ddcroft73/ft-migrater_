@@ -104,7 +104,7 @@ def view_log() -> None:
         showinfo("No Such File.", "No log has been created yet, or it was deleted.")    
 
 def move_files() -> None: 
-    cont = askquestion("Confirm Request", "You are about to move __ files.\nDoth Thou wish to continue?")
+    cont = askquestion("Confirm Request", "You are about to move __ files.\nDo you wish to continue?")
     if cont == 'yes':
         migrate.disperse_files()
 
