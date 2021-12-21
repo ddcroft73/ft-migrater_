@@ -92,7 +92,14 @@ class ConfigureJson:
                 except KeyError:
                    self.type_cbox.set('') 
 
-    
+    # WHen a new spath (Home Path) is saved. Makes sure 
+    # im still working with current data
+    def refresh_data(self) -> None:
+        data = self.__get_data(self.json_file)
+        self.curr_json_data = list(data.keys())[0]
+        
+
+
     def update_data(self, action: str, ftype: str=None,destination: str=None, spath: str=None) -> None:
         data = self.__get_data(self.json_file)
 
@@ -172,7 +179,7 @@ class ConfigureJson:
         result = self.__type_saved(ftype, destination, data)
         if result == (True, False):  # Destination does not match, but type has been saved, Could Overwrite
             cont = askquestion("Overwrite Previous Instruction?", 
-                    f"File Type: {ftype.upper()} is marked already.\nAre you sure you want to change the destination?", 
+                    f"File Type: {ftype.upper()} is marked for migration already.\nAre you sure you want to change the destination?", 
                     icon='question')                    
             if cont == 'no': 
                return

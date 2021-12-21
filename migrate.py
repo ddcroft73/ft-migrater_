@@ -38,7 +38,9 @@ class FileMigration:
         else:
             from_to_dict = self.__construct_dict(json_data)
             self.__exec_move_instructions(from_to_dict)
-       
+
+   
+
     # get all files to be moved
     def __make_keylist(self, json_data: dict) -> list:
         spath = self.spath
@@ -66,7 +68,7 @@ class FileMigration:
                 shutil.move(_from ,_to)    
             except Exception as er:
                 showinfo("Error", f"Error while moving files.\n{er}")
-                self.log_move(note=f" Error Moving file: {_from}")
+                self.log_move(note=f" Error Moving File: {_from}")
             self.log_move(from_path=_from, to_path=_to)
 
         status_report(self.status, f"{len(self.key_list)} files moved. Check log to confirm.")
