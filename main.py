@@ -128,7 +128,6 @@ def move_files() -> None:
     if cont == 'yes':
         migrate.disperse_files()
 
-
 def exit_() -> None:
     main_win.quit()
     main_win.destroy()
@@ -261,9 +260,6 @@ class FileView(object):
             path = os.path.join(*node, i)
 
         except Exception or PermissionError:
-            #Cant seem to fix this error. However doesnt SEEM to mess anythng up
-            # (Tuple index out of range), Just hacked around it 
-            # Permission error with certain directories. 
             path = self.curr_path
         return path      
 
@@ -315,7 +311,7 @@ TK_Y = int(main_win.winfo_screenheight()/2.5 - TK_HEIGHT/2)
  # Set window in center screen with following way.
 main_win.geometry(f"{TK_WIDTH}x{TK_HEIGHT}+{TK_X}+{TK_Y}")
 main_win.resizable(False,False)
-main_win.title('File Type Migration ') # load the current version to the title
+main_win.title('File Type Migrater ') # load the current version to the title
 #      TreeView
 tree_frame = ttk.LabelFrame(main_win, borderwidth=15)
 tree_frame.place(height=200, width=TK_WIDTH -10, x=3, y=25)
