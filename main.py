@@ -37,7 +37,7 @@ from toolTips import *
 from migrate import *
   
 
-# Refactor all code to use pathlib instead of os... or maybe just use it next time?  sheesh  
+# Refactor all code to use pathlib instead of os... or maybe just use it next time  
 DOWNLOADS_PATH = os.path.join(os.getenv('USERPROFILE'), 'Downloads') 
 JSON_FILE = './instructions.json'   
 
