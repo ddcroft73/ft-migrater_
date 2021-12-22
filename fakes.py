@@ -54,6 +54,8 @@ def create_working_dir(new_dir: str):
    # go as deep as needed. 
    if not os.path.exists(new_dir):
       dirs = new_dir.split("\\")
+      # this assumes the user is trying to make dirs on the root
+      # TODO extract the drive letter instead of assuming root
       dirs = dirs[1:]
       root = os.path.abspath(os.sep)
       try:
