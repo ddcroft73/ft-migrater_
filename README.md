@@ -1,7 +1,7 @@
 # ft-migrater_
 
 
-<b> A simple JSon editor GUI. Given a directory full of random files,exports the <br>
+<b> A simple file migration app with GUI. Given a directory full of random files,exports the <br>
  files across the computer using instructions set by the user. </b>
        <br><br>
   Basic features as per client requirements: <br><br>
