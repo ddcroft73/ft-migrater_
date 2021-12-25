@@ -49,7 +49,7 @@ down all the fake files.
 
 # Sets up Basic Demonstration
 def create_demo(working_dir: str, num_files: int) -> None:
-    file_names = ['_never_gonna', '_give_you', '_up_never', '_gonna_let', '_you_go', '_nevvvaa', "_"]
+    file_names = ['_never_gonna', '_give_you', '_up_never', '_gonna_let', '_you_go', '_nevvvaa', "_fake"]
     file_types = [".htmx", ".cpq", ".pdg", ".txq", ".nyet", ".rand"]
     
     file_list =  make_filelist(file_names, file_types, num_files)
