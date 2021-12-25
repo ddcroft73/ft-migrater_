@@ -2,11 +2,11 @@
 # ------------------------------------------------------------------------------------------------
 #  File Migrater -   main.py  Dec, 2021   DCroft @HobblinCobbller
 #
-#  Win 10 python 3.10 (Use of match case)
-#
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
 #       
+#   Win 1- python 3.10 uses match case
+#
 #   Basic features as per client requirements: 
 #     GUI with display of all files and directories of a predefined path.
 #     Ability to move selected files to Recycle Bin.
@@ -26,6 +26,10 @@
 #  In its simplest terms this program is a Json editor that uses the data to carry out 
 #  the export of all file type instructions.    
 # ------------------------------------------------------------------------------------------------ 
+
+#TODO: Check to see if the spath in the JSON still exists so the correct path is
+# represented when the combo directort box is loaded
+#TODO add support for other drives
 
 import os
 import subprocess
@@ -250,6 +254,10 @@ class FileView(object):
         cdrive_paths = [p for p in os.listdir(os.path.abspath(os.sep))]   
         return self.__format_directories(cdrive_paths)
 
+#TODO: Check to see if the spath in the JSON still exists so the correct path is
+# represented when the combo directort box is loaded
+#TODO add support for other drives
+
     # formats the directories in the root path to be useful as starting points in 
     # the treeview control. Maintains the root directory and the default sort path
     # as the first 2 always, Downloads folder will always be kept if spath is changed
@@ -319,6 +327,7 @@ class FileView(object):
            if destination != selection:
                filetype_dest_combo.set(selection)
                # Dont think this is necessary
+# ont let the same path be loaded int to the destination box as the Home path            
                """ showinfo("Same Destination", "Can't move to the same destination.\nIf you want to overlook a type, don't set any instructions.")
            else:"""
                
