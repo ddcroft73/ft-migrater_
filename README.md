@@ -1,7 +1,7 @@
 # ft-migrater_
 
 
-<b> A simple file migration app with GUI. Given a directory full of different files, exports the <br>
+<b> A simple file migration app with GUI. Given a directory full of different files, exports the 
  files across the computer using destinations set by the user. This application was created due to a need
 to constantly move and sift through the files in 2 folders populated by a scraper\file downloader. It 
 allows me to view what files have been downloaded, delete any trash, and move them in bulk as needed.</b>
