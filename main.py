@@ -2,6 +2,8 @@
 # ------------------------------------------------------------------------------------------------
 #  File Migrater -   main.py  Dec, 2021   DCroft @HobblinCobbller
 #
+#  Win 10 python 3.10 (Use of match case)
+#
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
 #       
