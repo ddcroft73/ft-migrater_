@@ -5,7 +5,7 @@
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
 #       
-#   Win 1- python 3.10 uses match case
+#   Win 10- python 3.10 uses match case
 #
 #   Basic features as per client requirements: 
 #     GUI with display of all files and directories of a predefined path.
