@@ -1,20 +1,11 @@
-#fakefiles.py
-# generate an array of fake files to demo ft-migrater, tracks the locations
-# and file names, so they can easily be removed after demo.
-# Creates directories for user to move the demo files into when using ft-migrater.
-# all
-
-# creates as many fake files as needed and puts them in a new, or existing directory
-# upt to 5 files types to test out the ability of the ft-migrater and see how it handles multiple file types
-# Create directories for user to move the files to from ft-migrater.
-# (existing directories may also be used.)  
-# Cleans up the mess of scattered files from the computer after demo.
-# All files and created directories are removed, no matter where they were migrated to.
-#   WARNING:
-#     Although existing directories may be used for the demo, --cleanall will delete them all
-#     and --cleanstart will delete the demo Home\Start path. 
-#     --files will not delete any directories from your computer.
-
+#  fakes.py
+#
+# generate an array of fake files to demo ft-migrater.
+#   Creates Start\Home path directories and fake files for the purpose of demonstrating ft-migrater. 
+#   Creates Destination directories for each file type generated to offere a quick demo of ft-migrater.#    
+#   tracks the locations and file names, so they can easily be removed after demo.
+#   Removes all created directories and files spawneded by the demo 
+#   
 
 import random
 import os
@@ -23,7 +14,7 @@ import shutil
 
 
 # ./demo.log was not finding this path on creation of the log, sometimes, but most times it
-# would put the log in the demo directory. This is not what i want.
+# would put the log in the demo directory. This is not what i wanted.
 # forcing it this way seems to work better.
 THIS_PATH = os.path.dirname(os.path.realpath(__file__))
 LOG = os.path.join(THIS_PATH, "demo.log")
@@ -34,7 +25,6 @@ def getfile_ext(fname: str) -> str:
     return fname.split(".")[-1]  
 
 # DEMO CREATION ROUTINES----------------------------------------------------------------------------
-
 def help() -> None:
     _help = """\
 To create the basic demo:\n\
@@ -57,7 +47,7 @@ down all the fake files.
     print(_help) 
     exit(0)
 
-# 
+# Sets up Basic Demonstration
 def create_demo(working_dir: str, num_files: int) -> None:
     file_names = ['_never_gonna', '_give_you', '_up_never', '_gonna_let', '_you_go', '_nevvvaa', "_"]
     file_types = [".htmx", ".cpq", ".pdg", ".txq", ".nyet", ".rand"]
@@ -67,36 +57,32 @@ def create_demo(working_dir: str, num_files: int) -> None:
     try:
        create_working_dir(working_dir)
        creation_log(start_dir_name=working_dir)
-
        for file in file_list: 
            #print(os.path.join(working_dir, file))
            create_file(os.path.join(working_dir, file))
-
        print(len(file_list), "files created in", working_dir)    
 
     except Exception as er:
        print("Error occured creating demo.", er) 
        exit(1) 
-    
+    # return only the etrensions [file types] to aid in setting up destinations
     return [getfile_ext(ext) for ext in file_list]
 
-
+#Makes bogus files to play with. Couldnt think of anything clever here :(
 def create_file(fname: str) -> None:
     with open(fname, "w") as f:
         f.write("")    
-    
-# much less likely to pick duplicate names, so user gets a more accurate # of demo files    
+      
 def rand_fname(name_list: list) -> str:
-    # create a random # of names, out of a random woed in the list
+    # much less likely to pick duplicate names, so user gets a more accurate # of demo files  
     rnd_fname = [name_list[random.randint(1,6)] for _ in range(0,random.randint(1,5)) ] 
     return "".join(rnd_fname)
 
-# TODO:
-# Change File types randoms back to 5
+# dont allow any duplicates
 def make_filelist(fnames: list, ftypes: list, numfiles: int) -> list:
-    return list(set([rand_fname(fnames) + ftypes[random.randint(0,2)] for _ in range(0,numfiles)]))
+    return list(set([rand_fname(fnames) + ftypes[random.randint(0,5)] for _ in range(0,numfiles)]))
 
-# create directory new, or inside existing
+# create new directory(s), or inside existing directory
 def create_working_dir(new_dir: str) -> None:      
     path = ""
     subs = new_dir.split(os.sep)
@@ -104,18 +90,15 @@ def create_working_dir(new_dir: str) -> None:
        for sub in subs:
            path += (sub+os.sep)
            if not os.path.exists(path):
-              #make this the start path to create in
               start_path = path
               os.mkdir(start_path)
 
     except Exception as er:
-        print("Error Creating directory", er)         
+        print("Error Creating Directory", er)         
         exit(1) 
 
-
-# logs the Start directory name and the destination name if applicable
-def creation_log(start_dir_name: str=None, destinations_dir_name: str=None) -> None:   
-    
+# allows for deletion of the directories later on.
+def creation_log(start_dir_name: str=None, destinations_dir_name: str=None) -> None:      
     if start_dir_name:
         with open(LOG, "w") as log_file:
             log_file.write(start_dir_name)    
@@ -126,13 +109,13 @@ def creation_log(start_dir_name: str=None, destinations_dir_name: str=None) -> N
             log_file_append.write(" " + destinations_dir_name)    
         print("Destinations created in", destinations_dir_name)    
 
-# given a list of the file types created in create_demo(), make a directory for 
-# each type inside the path passed in
+# THis will make the demo of ft-migrater a bit faster. Gives the user a ready made 
+# destination to move the files to and they dont need to worry about setting up test directories
+# However, Any existing directory can be used.
 def create_destinations(file_types: list, path: str) ->None:
     # create a sub directory for each type inside the directory user
     # entered
-    dirs = set(file_types)
-    #create the working directoy
+    dirs = set(file_types)    
     create_working_dir(path)
     try:
         os.chdir(path)
@@ -144,13 +127,10 @@ def create_destinations(file_types: list, path: str) ->None:
     except Exception as er:
         print("Error creating sub directories in", path, er)     
         exit(1)   
-
     
-
 #DEMO REMOVAL ROUTINES --------------------------------------------------------------------------------
 
-#Need to open the LOG and extract the path of the directory 
-# the demo was created in, or the path to the destination dir
+#lets me know where to find the migrate_log.txt file
 def get_dir_name(start: bool=False, destination: bool=False) -> str:    
      if os.path.exists(LOG):
          if start:
@@ -165,8 +145,6 @@ def get_dir_name(start: bool=False, destination: bool=False) -> str:
      return dir_name
 
 
-# remove the all directories created by demo
-# WARNING: WILL REMOVE ANY DIRECTORY
 def remove_directory(path: str) -> None:
     if os.path.exists(path):
         shutil.rmtree(path) 
@@ -175,14 +153,13 @@ def remove_directory(path: str) -> None:
         print("No such directory.\nProgram Terminated.", path)
         exit(1)
 
-
 # find migrate_log.txt which is created by ft-migrater when files are moved out of
-# the Home Path ASSUMES THAT ONLY DEMO FILES WILL BE IN LOG
+# the Home Path
 def get_migratelog_data() -> list:
     # look for the"migrate_log.txt" in the demo\START directory
     demo_dir = get_dir_name(start=True)
     migrate_log_path = os.path.join(demo_dir, MIGRATE_LOG)
-    # open and search the migrate_log.txt  file
+    
     try:
        with open(migrate_log_path, "r") as mlog:                   
           file_data = [line.strip("\n") for line in mlog.readlines() if line != "\n" and line[:5] != "FROM:"]
@@ -193,26 +170,23 @@ def get_migratelog_data() -> list:
     return file_data   
 
 def parse_demofile_paths(data: list) -> list:
-    # extract the file naem, and its location from the data list
+    # extract the file name, and its location from the data list
     # MOVED: is where the filename is 
     # TO: is where the location is
-    fname = [] 
     path = []
+    fname = [] 
     # Need to build paths with this info in the order is in the list
-    # Build a list of MOVED and a list of TO and then zip them
+    # all i care about is file path\name
     for item in data:
         if item[0] == "M":
-           fname.append(item[8:]) # remove all but the file info
+           fname.append(item[8:])
         if item[0] == "T":
             path.append(item[8:])       
     return [os.path.join(path[x], fname[x]) for x in range(len(fname))]
 
 
-# Destroys all Fake Demo files that were generated. THis routine
-# will find the location of ALL the files that ft-migrater moved in the demo.
-# and remove them from the computer.
+# Destroys all Fake Demo files that were generated. 
 def destroy_demo_files() -> None:
-    # get all datat back in a list
     mlog_data = get_migratelog_data()
     demofile_paths = parse_demofile_paths(mlog_data)
     try:
@@ -221,7 +195,8 @@ def destroy_demo_files() -> None:
            os.remove(path)
 
     except Exception as er:
-        print(f"An error occured removing demo files. {er}")        
+        print(f"An error occured removing demo files. {er}")    
+
     print("All demo files, tracked down and deleted.")       
 
 
@@ -231,8 +206,6 @@ def del_demolog(demo_log) -> None:
         print("demo log deleted.")
     except Exception as er:
         print("error deleting demo log...", er)    
-
-#   END DEMO REMOVAL CODE ------------------------------------------------------------------------------------------------    
 
 
 def cleanall() -> None:    
@@ -269,9 +242,13 @@ def clean_only_files() -> None:
        print('Program Termited.')      
      exit(0)              
 
+#   END DEMO REMOVAL CODE ------------------------------------------------------------------------------------------------    
+
          
 """
-3 arguments only
+Opted not to use an argumrnt parser, firdt time with CLI so...
+
+accepts 3 arguments only
 arg[1] - either a path, or a command
 arg[2] - num of files, or path to the destinationd directoies
 arg[3] -path, numfiles, destination
@@ -292,7 +269,7 @@ def parse_args(arg) -> None:
 
     # decide what dealing with, and make assignments...
     match len(arg):
-        case 1:          # no argumentws, or one argument
+        case 1:          # no arguments given
             help()
 
         case 2:          # one argument, cleanup or using basic demo with default number of files
@@ -319,12 +296,15 @@ def parse_args(arg) -> None:
                 start_dir = arg[1]
                 dest_dir = arg[2]
                 numfiles = 10                
-        case 4:           # user entered 3 comands
+        case 4:           # user entered 3 arguments
             # path, numfiles, destination path
             doing = 'full'
             start_dir = arg[1]
             numfiles = int(arg[2]) 
             dest_dir = arg[3]  
+
+        case _:           # user has no idea how to use the demo
+            help()    
      
     #execute the demo. create directories and spawn fake files
     match doing:
