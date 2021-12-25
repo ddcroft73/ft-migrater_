@@ -1,0 +1,28 @@
+
+fakes.py
+
+This script uses a CLI to generate directories and bogus files to demomstrate the use of the ft-migrater.
+
+  Create a path to use as a home\start path in which to move files out of.
+  Create as many fake files as needed to demo the migration of files by type over the computer.
+  Create a destinaiton path to use as a location to migrate into
+    (depending on the types generated, a directory for each will be created.)
+  Cleanup all created diirectories and files after the demo.
+  Only a Home\Start path is required to run the demo. THe files may be moved anywhere into 
+  existing directories if desired. 
+
+Usage:  --flag<homepath> <numfiles> <destinationpath>
+   Fluff for demo:
+       C:\home\path 100 C:\Destination\path
+       <homepath>         required
+       <numfiles>         may be omitted. default is 10
+       <destinationpath>  may be omitted. Wil not be created. Assumes user will use existing directories.
+    
+   Cleanup:
+       --cleanall    Delete start path.
+                     Delete all files.
+                     Deletes Destinations, if created by the demo. Existing will not be removed.
+                     Delete demo log
+       
+       --dir         Delete only directories created by demo
+                     Delete demo log
