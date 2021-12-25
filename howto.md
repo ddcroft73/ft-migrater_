@@ -1,13 +1,10 @@
-plain text
-
-
 
 
 User Guide:
 
 Navigation:<br>
   _The root drive, the default home path (Downloads folder), or any of the directories stemming from
-  Drive C: can be slected from the combo box at the top. When the directory is selected, the treeview will
+  Drive C: can be selected from the combo box at the top. When the directory is selected, the treeview will
   be updated. THe Downloads folder, and the Home path (also refered to as sort path) will be #'s 2 and 3
   after drive C.
   _The current Home Path will always be the starting view point of the FileView\Treeview, and will change
@@ -30,19 +27,21 @@ Selecting\Entering a Destination:<br>
   the directory name. THe name will be cast to the destination combo box.
   _Enter the path manually
   _If you want to move a file type to a directory that is yet to exist, Navigate to the parent directory
-  and then type in the name of the new directory.<br>
+  and then type in the name of the new directory. It will be created before the move.<br>
 <br>
 
 Editing Destination instructions:<br>
    Save<br>
     _Once the Type and Destination requirements have been met, Click the "Save" Button. The instruction will be 
-    saved and confirmatiion will be cast to the status bar.<br>
+    saved and confirmatiion will be shown ino the status bar.<br>
   Delete <br>
     _Select the file type from the type combobox. The destintation as previously saved will be cast to the destination
     box. Click Delete.<br>
+  Delete All<br>
+    _Click "Delete All" All the previoous information will be discarded except for the Home Path. It can only be changed.<br>
   Update<br>
     _You can pull up any destination for any type previously saved by selecting the type, the relevant path will be cast to the
-    Destination and either can be edited, and saved again.<br>
+    Destination and can be edited, and saved again.<br>
 <br>
 Changing the Home path:<br>
   _Select the "Path" tab next to "Instructions<br>
@@ -55,5 +54,5 @@ Viewing Json and Log files:<br>
   edited directly with the same results if need be.  
 <br>
 Logging:<br>
-  By default whenever a migration is finished, or attempted, a log file will be generated and stored in the current
-  Home path. The Files Original and and destintion paths are logged as well as the date and time.
+  By default whenever a migration is finished, a log file will be generated and stored in the current
+  Home path. The Files Original and destintion paths are logged as well as the date and time.
