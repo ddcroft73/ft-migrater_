@@ -45,14 +45,14 @@ JSON_FILE = './instructions.json'
 #----------------------------------------------------------------------------------------
 #  COMMAND BUTT0N EVENT FUNCTIONS
 #----------------------------------------------------------------------------------------
-def _del_file(path: str) -> None:
+def del_file(path: str) -> None:
     cont = ""
     cont =askquestion("Send to Recycle Bin", "Are you are sure you want to delete: " + path + "\n\nContinue?", icon='question') 
     if cont == 'yes':
         send2trash(path)
         file_browse.update_view(getdir_only(path)) 
 
-def _del_directory(path: str) -> None:
+def del_directory(path: str) -> None:
     cont = ""
     cont =askquestion("Delete directory", "Are you are sure you want to delete: " + path + " \nand all it's contents? \nThis cannot be undone. \n\nContinue?", icon='question') 
     if cont == 'yes':
@@ -66,11 +66,13 @@ def delete_path() -> None:
     if label_selected.cget('text') == "":
         status_report(status_label," Nothing to delete.")
         return
-    
+
     if os.path.isfile(path):
-        _del_file(path)        
+        del_file(path)        
     else:
-        _del_directory(path)
+        del_directory(path)
+
+    status_report(status_label, f"{path} was removed.")    
 
 def save() -> None:        
     filetype = filetype_combo.get()
@@ -109,6 +111,7 @@ def change_spath() -> None:
     # update the spath variable in the Json class since a change was just made
     config.refresh_data()
     curr_spath_label.configure(text=new_spath)
+    file_browse.refresh_directories()
     file_browse.update_view(new_spath)
 
 def select_path() -> None:
@@ -193,12 +196,12 @@ class FileView(object):
         # only gives access to the main directories off the root drive. Just a bit
         # to hasten the navigation of the drive. No support for other drives... yet
         self.directory_selected = tk.StringVar()
-        directory_box = ttk.Combobox(main_win, textvariable=self.directory_selected, state='readonly')
-        directory_box['values'] = self.__get_directories()
-        directory_box.current(0)
-        directory_box.place(width=580,x=10, y=20) #510
-        directory_box.bind('<<ComboboxSelected>>', self.__path_changed)
-        CreateToolTip(directory_box, "Select a directory to view its contents.")
+        self.directory_box = ttk.Combobox(main_win, textvariable=self.directory_selected, state='readonly')
+        self.directory_box['values'] = self.__get_directories()
+        self.directory_box.current(0)
+        self.directory_box.place(width=580,x=10, y=20) #510
+        self.directory_box.bind('<<ComboboxSelected>>', self.__path_changed)
+        CreateToolTip(self.directory_box, "Select a directory to view its contents.")
 
         abspath = os.path.abspath(path)
         self.__insert_node('', abspath, abspath)
@@ -212,6 +215,10 @@ class FileView(object):
         # Dont allow any Bullshit to influence the treeview
         if os.path.isfile(path) or os.path.isdir(path):
            self.__set_path(os.path.join(abspath, path))
+
+    def refresh_directories(self) -> None:
+        self.directory_box['values'] = self.__get_directories()
+        
     
     # works in conjunction with os.path.isfile()
     def isfile(self,path) -> bool:
@@ -245,13 +252,12 @@ class FileView(object):
     # the treeview control. Maintains the root directory and the default sort path
     # as the first 2 always, Downloads folder will always be kept if spath is changed
     def __format_directories(self, lst: list) -> list:
-
         spath = list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
         first_two = [os.path.abspath(os.sep)] + [os.path.join(spath)]  
         dloads_path = [os.path.join(DOWNLOADS_PATH)]
+        
         # if the default path was changed, retain access to the Downloads dir
-        if spath != DOWNLOADS_PATH: 
-         
+        if spath != DOWNLOADS_PATH:          
             first_two += dloads_path
 
         root = os.path.abspath(os.sep)        
