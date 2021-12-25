@@ -26,3 +26,7 @@ Usage:  --flag<homepath> <numfiles> <destinationpath>
        
        --dir         Delete only directories created by demo
                      Delete demo log
+
+WARNING: For destinations, existing directories may be used. However DO NOT create a home path or
+a destination inside of an existing directoy. All parent as well as sub directories associated with
+this demo will be removed.
