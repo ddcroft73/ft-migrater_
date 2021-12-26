@@ -6,15 +6,15 @@ A simple file migration app with GUI. Given a directory full of different files,
    - GUI will display all files and directories of a predefined path. 
    - Ability to move selected files to Recycle Bin. 
    - Easy Selection of file types and destinantions. 
-   - Complete no typing interface. (Destnations may still be typed.)
-     If a destination does not exist, it will be created.
-     (new directories can be quickly created by first selecting the parent directory)
+   - Complete no typing interface. (Destnations may still be typed.)<br>
+     *If a destination does not exist, it will be created. new directories can be quickly<br> 
+     created by first selecting the parent directory and typing in the name*
    - Quick navigation of the instructions with real time updating. 
    - Ability to Add, Delete, Update destinations for a file type.
    - Ability to change the path of the folder being sorted.
-   - Widgets should update according to any relative info, and only relative info
-     (when a file is selected a destination will display if an instruction has been set
-     remain blank if not)
+   - Widgets should update according to any relative info, and only relative info<br>
+     *when a file is selected a destination will display, <br>if an instruction has been set.
+     Will remain blank if not*
    - Only files in the path to be sorted, "sort path" will be regarded.
    - JSon file viewer (the instructions can be hand edited and the program will adhere)
    
