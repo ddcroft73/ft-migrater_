@@ -39,7 +39,7 @@
     - Select the file type from the type combobox. The destintation as previously saved will be cast to the destination
     box. Click Delete.
 - Delete All
-    - Click "Delete All" All the previoous information will be discarded except for the Home Path. It can only be changed.
+    - Click "Delete All" All the previoous information will be discarded except for the Home Path. It can only be changed, via the "Path" tab.
 - Update
     - You can pull up any destination for any type previously saved by selecting the type, the relevant path will be cast to the
     Destination and can be edited, and saved again.
@@ -50,9 +50,9 @@
   - Click the "Save" button
 
 ### Viewing Json and Log files:
-  - Click the relevant box to make yoour choice.>
-  **WARNING: ANy changes made to the JSon file can effect the outcome of future migrations. The file may be 
-  edited directly with the same results if need be.**  
+  - Click the relevant box to make yoour choice.<br><br>
+  **WARNING: Any changes made to the JSon file may effect the outcome of future migrations. The file may be 
+  edited directly with the same results if need be, but the results may not show up inside the application right away.**  
 
 ### Logging:
   By default whenever a migration is finished, a log file will be generated and stored in the current
