@@ -45,7 +45,7 @@ def help() -> None:
 ||
 ||  WARNING:  For destinations, existing directories may be used. However DO NOT\n\
 ||  create a home path or a destination inside of an existing directoy. All parent\n\
-||  as well as sub directories associated with this demo will be removed.\
+||  as well as sub directories created with this demo will be removed.\
 \n--------------------------------------------------------------------------------
     """
     print(_help) 
