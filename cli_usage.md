@@ -28,6 +28,10 @@ Usage:  --flag<homepath> <numfiles> <destinationpath>
        --dir         Delete all directories created by demo
                      Delete demo log
 ~~~
+
+### Behavior 
+
+   #### fakes.py attempts to offer a clean precise file and directory setup with which to test [ft-migrater]() 
 ---
 
 WARNING: For destinations, existing directories may be used. However DO NOT create a home path or
