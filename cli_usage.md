@@ -8,6 +8,10 @@
   - Only a Home\Start path is required to run the demo. THe files may be moved anywhere into 
   existing directories if desired. 
 ---  
+ 
+fakes.py attempts to offer a clean precise file and directory setup with which to test [ft-migrater](). If for any reason the program exits, it will clean up all directories ad files if any it has created. Since all directories created will be removed it is not allowed to create sub directories for the demo inside pre-existing directoreis. If the user does not create the destination and wishes to move the demo files in preexisting directories, thes directories will not be removed but the files will be tracked down and desleted one by one.
+
+---
 ~~~
 Usage:  --flag<homepath> <numfiles> <destinationpath>
 
@@ -29,12 +33,4 @@ Usage:  --flag<homepath> <numfiles> <destinationpath>
                      Delete demo log
 ~~~
 
-### Behavior 
 
-   #### fakes.py attempts to offer a clean precise file and directory setup with which to test [ft-migrater]() 
----
-
-WARNING: For destinations, existing directories may be used. However DO NOT create a home path or
-a destination INSIDE of an existing directoy. All parent as well as sub directories associated with
-this demo will be removed. FIle removal is safe and effective and will not leave any bogus files after
-demo.
