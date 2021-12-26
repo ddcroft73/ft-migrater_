@@ -19,7 +19,13 @@ THIS_PATH = os.path.dirname(os.path.realpath(__file__))
 LOG = os.path.join(THIS_PATH, "demo.log")
 MIGRATE_LOG = "migrate_log.txt"
 
-         
+#TODO
+#Do not allow user to create directories inside existing directories
+# if they do, then the existing will be deleted on clean up. For an effective
+#clean up, all directories must be removed, so check to see if dir exists as usual
+# and deny it if existing is detected.
+
+
 def getfile_ext(fname: str) -> str:         
     return fname.split(".")[-1]  
 
