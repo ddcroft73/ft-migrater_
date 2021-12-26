@@ -2,7 +2,8 @@
 
 A simple file migration app with GUI. Given a directory full of different files, exports the  files across the computer using destinations set by the user. This application was created for a specific user due to the needto constantly move and sift through the files in changing folders populated by different scraper\file downloaders. It  allows you to view what files have been downloaded, delete any trash, and move them in bulk as needed. Ability to add\ delete support for new or old file types.
        
-  ## Basic features as per user requirements: <br><br>
+  ## Basic features as per user requirements: 
+  
    - GUI will display all files and directories of a predefined path. 
    - Ability to move selected files to Recycle Bin. 
    - Easy Selection of file types and destinantions. 
