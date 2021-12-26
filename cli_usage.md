@@ -31,6 +31,10 @@ Usage:  --flag<homepath> <numfiles> <destinationpath>
        
        --dir         Delete all directories created by demo
                      Delete demo log
+                     
+       Use  --cleanall if you moved files to existing directories to seek them all out. 
+       If You did not move files to existing diretories, --dir will suffice because it deletes all
+       directories created by fakes.py.
 ~~~
 
 
