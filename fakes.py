@@ -17,15 +17,10 @@ import shutil
 # forcing it this way seems to work better.
 THIS_PATH = os.path.dirname(os.path.realpath(__file__))
 LOG = os.path.join(THIS_PATH, "demo.log")
+
 MIGRATE_LOG = "migrate_log.txt"
 
-#TODO
-#Do not allow user to create directories inside existing directories
-# if they do, then the existing will be deleted on clean up. For an effective
-#clean up, all directories must be removed, so check to see if dir exists as usual
-# and deny it if existing is detected.
-
-
+         
 def getfile_ext(fname: str) -> str:         
     return fname.split(".")[-1]  
 
@@ -40,18 +35,16 @@ def help() -> None:
 ||
 ||  To create the demo with destination directories:\n\
 ||    Usage: <path> <numfiles> <deestination> \n\
-||          <numfile> may be omitted. Default 10 files will be created.\n\
+||           <numfile> may be omitted. Default 10 files will be created.\n\
+||           <destination> may be omitted. Assumes existing directory use\n\
+||                         and files will be removed one by one.\n\
 ||
 ||  Cleanup:\n\
 ||    --cleanall    Removes all directories, files and log.\n\
 ||    --dir         Removes only files, log.\n\
 ||
 ||  Will effectively track down all fake files created by this script.
-||  No pre-existing directories will be harmed in this demo \n\
-||
-||  WARNING:  For destinations, existing directories may be used. However DO NOT\n\
-||  create a home path or a destination inside of an existing directoy. All parent\n\
-||  as well as sub directories created with this demo will be removed.\
+||  No pre-existing directories will be harmed in this demo \
 \n--------------------------------------------------------------------------------
     """
     print(_help) 
@@ -95,20 +88,27 @@ def rand_fname(name_list: list) -> str:
 def make_filelist(fnames: list, ftypes: list, numfiles: int) -> list:
     return list(set([rand_fname(fnames) + ftypes[random.randint(0,2)] for _ in range(0,numfiles)]))
 
-# create new directory(s), or inside existing directory
-def create_working_dir(new_dir: str) -> None:      
+# create new directory(s), Do not allow the user to create a directory inside an existing directory.
+def create_working_dir(new_dir: str, destinations: bool=False) -> None:      
     path = ""
     subs = new_dir.split(os.sep)
+    root = os.path.join(subs[0], os.sep) 
+    # only allow directories to be created in root. Check the path to see if  createing 
+    # a dir inside one that exists.
     try:
        for sub in subs:
            path += (sub+os.sep)
-           if not os.path.exists(path):
-              start_path = path
-              os.mkdir(start_path)
-
-    except Exception as er:
-        print("Error Creating Directory", er)         
-        exit(1) 
+           if path != root:
+               # if any part of this path exists, exit with warning , cleanup previous work
+               if os.path.exists(path):
+                  raise Exception
+               else:
+                   os.mkdir(path)   
+    except:
+        print("Existing path detected.\nCannot create sub directories inside existing directories.")    
+        # if destination run, cleanup the HomePath that was already created.
+        if destinations: deldir()
+            
 
 # allows for deletion of the directories later on.
 def creation_log(start_dir_name: str=None, destinations_dir_name: str=None) -> None:      
@@ -128,7 +128,7 @@ def creation_log(start_dir_name: str=None, destinations_dir_name: str=None) -> N
 def create_destinations(filetypes: list, path: str) ->None:
     # create a sub directory only for each type in the file_types list
     dirs = set(filetypes)    
-    create_working_dir(path)
+    create_working_dir(path, destinations=True)
     try:
         # mkes sure create the dir in the right parent.
         # dont need the full path
@@ -162,8 +162,7 @@ def get_dir_name(start: bool=False, destination: bool=False) -> str:
      except IndexError:
         # this just means the user did not create a new destination direcctory
         # and opted to use existing. There is no path to retreive. 
-        pass 
-        dir_name = ""
+        dir_name = None
      return dir_name
 
 
@@ -171,8 +170,8 @@ def get_dir_name(start: bool=False, destination: bool=False) -> str:
 # last path created. C:\path\path, always get the parent as well
 def remove_directory(path: str) -> None:
     # exit because there was no directory saved to delete. user defined 
-    # destination path..
-    if path == "": return
+    # destination path.
+    if path == None: return
 
     subs = path.split(os.sep)
     parent = os.sep.join(subs[:2])
