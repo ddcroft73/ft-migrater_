@@ -50,7 +50,7 @@
   - Click the "Save" button
 
 ### Viewing Json and Log files:
-  - Click the relevant box to make yoour choice.<br><br>
+  - Click the relevant box to make yoour choice.<br>
   **WARNING: Any changes made to the JSon file may effect the outcome of future migrations. The file may be 
   edited directly with the same results if need be, but the results may not show up inside the application right away.**  
 
