@@ -11,12 +11,14 @@ A simple file migration app with GUI. Given a directory full of different files,
      created by first selecting the parent directory and typing in the name*
    - Quick navigation of the instructions with real time updating. 
    - Ability to Add, Delete, Update destinations for a file type.
-   - Ability to change the path of the folder being sorted.
+   - Ability to change the path of the folder being sorted "home path".
    - Widgets should update according to any relative info, and only relative info<br>
-     *when a file is selected a destination will display, <br>if an instruction has been set.
+     *when a file is selected a destination will display, if an instruction has been set.<br>
      Will remain blank if not*
-   - Only files in the path to be sorted, "sort path" will be regarded.
+   - Only files in the path to be sorted, "homne path" will be regarded.
    - JSon file viewer (the instructions can be hand edited and the program will adhere)
+   - Maintains a log of all files moved with *To: FROM:* information.
+   - Log viewer
    
- In its simplest terms this program is a Json editor that uses the data to carry out <br>
- the export of all relevent file types .  
+ In its simplest terms this program is a graphical JSon editor that uses the data to carry out <br>
+ the export of all relevent file types. 
