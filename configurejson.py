@@ -40,14 +40,20 @@ class ConfigureJson:
     # restart. Lets the user know there was a problem instead of just fixing it. Most likely the 
     # json file was edited poorly or all data was wiped.
     @staticmethod 
-    def get_data(fname: str, default_path: str)-> dict:        
+    def get_data(fname: str, default_path: str, path_check: bool=False)-> dict:        
         try: 
            with open(fname) as file:
-              data = json.load(file)               
+              data = json.load(file)  
+
+           if path_check:
+             if not os.path.exists(list(data.keys())[0]):
+                showinfo("Home Path Not Found", "The current home path can not be found.", icon='info')
+                   
         except FileNotFoundError:  
            data = {  
              default_path : {}
           }    
+          
         except IndexError:
             showinfo("No Data Found", "JSon data has been corrupted. Restart program to create new file with default path.")
             os.remove(fname)    
@@ -71,34 +77,19 @@ class ConfigureJson:
 
     # lets the user see what has been set up and what has not, to make the 
     # setting of instructions and navigation easier\faster
-    def show_instructions(self, changed: str, data: str) -> None:
+    def show_instructions(self, data: str) -> None:
         spath = list(self.curr_json_data.keys())[0]
-        match changed:
-            case 'type':
-                # shows the destination for this type
-                try:
-                   value = self.curr_json_data[spath][data]
-                   self.type_dest_cbox.set(value)
-                except KeyError:
-                   self.type_dest_cbox.set('') 
-
-            case 'destination':
-                # Shows the type for this destination
-                try:
-                   types = list(self.curr_json_data[spath].keys())
-                   destinations = list(self.curr_json_data[spath].values())
-                   pos = destinations.index(data)
-                   self.type_cbox.set(types[pos])
-                except KeyError:
-                   self.type_cbox.set('') 
+        try:
+            value = self.curr_json_data[spath][data]
+            self.type_dest_cbox.set(value)
+        except KeyError:
+            self.type_dest_cbox.set('') 
 
     # WHen a new spath (Home Path) is saved. Makes sure 
     # im still working with current data
     def refresh_data(self) -> None:
         data = self.__get_data(self.json_file)
-        self.curr_json_data = list(data.keys())[0]
-        
-
+        self.curr_json_data = data
 
     def update_data(self, action: str, ftype: str=None,destination: str=None, spath: str=None) -> None:
         data = self.__get_data(self.json_file)
