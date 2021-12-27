@@ -23,8 +23,7 @@ import shutil
 THIS_PATH = os.path.dirname(os.path.realpath(__file__))
 LOG = os.path.join(THIS_PATH, "demo.log")
 MIGRATE_LOG = "migrate_log.txt"
-
-         
+DEF_FILES_NUM = 10        
 
 def getfile_ext(fname: str) -> str:         
     return fname.split(".")[-1]  
@@ -33,7 +32,7 @@ def getfile_ext(fname: str) -> str:
 
 # Sets up Basic Demonstration
 def create_demo(working_dir: str, num_files: int) -> None:
-    file_names = ['_never_gonna', '_give_you', '_up_never', '_gonna_let', '_you_go', '_nevvvaa', "_"]
+    file_names = ['-never_gonna', '-give_you', '-up_never', '-gonna_let', '-you_go', '-nevvvaa', "-random"]
     file_types = [".htmx", ".cpq", ".pdg", ".txq", ".nyet", ".rand"]
     
     file_list =  make_filelist(file_names, file_types, num_files)
@@ -65,7 +64,7 @@ def rand_fname(name_list: list) -> str:
 
 # dont allow any duplicates
 def make_filelist(fnames: list, ftypes: list, numfiles: int) -> list:
-    return list(set([rand_fname(fnames) + ftypes[random.randint(0,5)] for _ in range(0,numfiles)]))
+    return list(set([rand_fname(fnames) + ftypes[random.randint(0,3)] for _ in range(0,numfiles)]))
 
 # program acts odd if user adds double os.sep, (as per testing for idiots)
 # create_working_dir() will make weird ass directories
@@ -182,6 +181,7 @@ def get_dir_name(start: bool=False, destination: bool=False) -> str:
      except IndexError:
         # this just means the user did not create a new destination direcctory
         # and opted to use existing. There is no path to retreive. 
+       
         dir_name = None
      return dir_name
 
@@ -195,12 +195,16 @@ def remove_directory(path: str) -> None:
 
     subs = path.split(os.sep)
     parent = os.sep.join(subs[:2])
+    try:
+       if os.path.exists(parent):
+           shutil.rmtree(parent) 
+           print(parent, "has been removed.")
+       else:
+           print("No such directory.", parent)
 
-    if os.path.exists(parent):
-        shutil.rmtree(parent) 
-        print(parent, "has been removed.")
-    else:
-        print("No such directory.", parent)
+    except PermissionError:
+        print("Another application is accesing the directory, perhaps a log file is open in Notepad.")       
+        exit(1)
 
 
 def get_migratelog_data() -> list:
@@ -245,15 +249,16 @@ def destroy_demo_files() -> None:
     # if not a migrate log, files have not been moved. exit and let 
     # remove_directory() cleanup
     if mlog_data == None: return
+
     demofile_paths = parse_demofile_paths(mlog_data)
     try:
-        for path in demofile_paths:
+        for cnt, path in enumerate(demofile_paths):
            print("Deleting:", path)
            os.remove(path)
     except Exception as er:
-        print(f"An error occured removing demo files. {er}")    
+        print(f"An error occured removing demo files. \n{er}")    
 
-    print("All demo files, tracked down and deleted.")      
+    print(f" {cnt+1} demo files tracked down and deleted.")      
 
 def del_demolog(demo_log) -> None:
     try:
@@ -263,60 +268,63 @@ def del_demolog(demo_log) -> None:
         print("error deleting demo log...", er)    
 
 
-def cleanall() -> None:    
-    destroy_demo_files()
-    remove_directory(get_dir_name(start=True)) 
-    remove_directory(get_dir_name(destination=True))
-    del_demolog(LOG) 
-    exit(0)
-
+# Cleanup routines
 def deldir() -> None:
     remove_directory(get_dir_name(start=True)) 
     remove_directory(get_dir_name(destination=True))
     del_demolog(LOG)    
     exit(0)
 
+# Even though this function will facilitate a total clean of all directories created by sript
+# It is best utilized when ft-migrter moves files to random directories selected by user.
+# its main goal is to seek and destroy files
+def cleanall() -> None:    
+    destroy_demo_files()
+    deldir()
 
 #   END DEMO REMOVAL CODE ------------------------------------------------------------------------------------------------    
 
 def help() -> None:
     _help = """\
-\n--------------------------------------------------------------------------------\n\
+\n------------------------------------------------------------------------------------------\n\
 ||  To create the basic demo:\n\
+||    
 ||    Usage: <path> <numfiles>   (Do not use spaces in directory names.)\n\
+||    
 ||           <numfiles> may be omitted. Default 10 files will be created.\n\
 ||
 ||  To create the demo with destination directories:\n\
+||    
 ||    Usage: <path> <numfiles> <deestination> \n\
-||           <numfile> may be omitted. Default 10 files will be created.\n\
-||           <destination> may be omitted. Assumes existing directory use\n\
-||                         and files will be removed one by one.\n\
+||    
+||           <numfile>       may be omitted. Default 10 files will be created.\n\
+||           <destination>   may be omitted. Assumes existing directory use\n\
+||                           and files will be removed one by one.\n\
 ||
 ||  Cleanup:\n\
 ||    --cleanall    Removes all directories, files and log.\n\
 ||    --dir         Removes all directories but will not remove any files\n\
-||                  that were moved to existing directories.\n\
+||                  that were moved to existing directories. use ---clearall.\n\
 ||                  Removes log.
 ||
 ||  Will effectively track down all fake files created by this program.
 ||  No pre-existing directories will be removed by this program. \
-\n--------------------------------------------------------------------------------
+\n------------------------------------------------------------------------------------------
     """
     print(_help) 
     exit(0)        
 
 """
-Opted not to use an argumrnt parser, first time with CLI so...
+Opted not to use an argumrnt parser, first time with CLI so... will learn it
 
 accepts 3 arguments only
 arg[1] - either a path, or a command
 arg[2] - num of files, or path to the destinationd directoies
-arg[3] -path, numfiles, destination
+arg[3] - destination path
 
 """
 def parse_args(arg) -> None:                    
     dest_dir = "" # assume basic demo
-
     # decide what dealing with, and make assignments...
     match len(arg):
         case 1:          # no arguments given
@@ -332,7 +340,7 @@ def parse_args(arg) -> None:
                    # basic default demo
                    doing = 'basic'
                    start_dir = arg[1]
-                   numfiles = 10     
+                   numfiles = DEF_FILES_NUM     
         case 3:           # user entered 2 arguments,  
             # one is demo path, 2 is either numfiles, or destination path 
             if arg[2].isdigit():
@@ -343,14 +351,15 @@ def parse_args(arg) -> None:
                 doing = 'full'    
                 start_dir = arg[1]
                 dest_dir = arg[2]
-                numfiles = 10                
+                numfiles = DEF_FILES_NUM                
         case 4:           # user entered 3 arguments
             # path, numfiles, destination path
+
             doing = 'full'
             start_dir = arg[1]
-            numfiles = int(arg[2]) 
+            numfiles = int(arg[2]) if arg[2].isdigit() else DEF_FILES_NUM
             dest_dir = arg[3]  
-
+           
         case _:           # user has no idea how to use the demo
             help()    
 
@@ -366,7 +375,8 @@ def parse_args(arg) -> None:
         demo_report()
         
 
-# START PROGRAM
+
+
 if __name__ == '__main__':
     parse_args(sys.argv)
     
