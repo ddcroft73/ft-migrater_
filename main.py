@@ -27,8 +27,7 @@
 #  the export of all file type instructions.    
 # ------------------------------------------------------------------------------------------------ 
 
-#TODO: Check to see if the spath in the JSON still exists so the correct path is
-# represented when the combo directort box is loaded
+
 #TODO add support for other drives
 #TODO Add create directory widgets
 
