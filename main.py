@@ -5,7 +5,7 @@
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
 #       
-#   Win 10- python 3.10 uses match case
+#   Win 1- python 3.10 uses match case
 #
 #   Basic features as per client requirements: 
 #     GUI with display of all files and directories of a predefined path.
@@ -30,6 +30,7 @@
 #TODO: Check to see if the spath in the JSON still exists so the correct path is
 # represented when the combo directort box is loaded
 #TODO add support for other drives
+#TODO Add create directory widgets
 
 import os
 import subprocess
@@ -344,12 +345,12 @@ TK_Y = int(main_win.winfo_screenheight()/2.5 - TK_HEIGHT/2)
  # Set window in center screen with following way.
 main_win.geometry(f"{TK_WIDTH}x{TK_HEIGHT}+{TK_X}+{TK_Y}")
 main_win.resizable(False,False)
-main_win.title('File Type Migrater ') # load the current version to the title
+main_win.title('ft-migrater v1') # load the current version to the title
 #      TreeView
 tree_frame = ttk.LabelFrame(main_win, borderwidth=15)
 tree_frame.place(height=200, width=TK_WIDTH -10, x=3, y=25)
 file_browse = FileView(tree_frame,
-                       path=list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0], 
+                       path=list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH, path_check=True).keys())[0], 
                        text="Select file or directory")
 #=================================== TABBED CONTRAOL TO HOUSE ACCESS TO INSTRUCTIONS\SETTINGS ========================
 tabControl = ttk.Notebook(main_win)
@@ -473,7 +474,7 @@ if __name__ == '__main__':
                   status_label, curr_spath_label, change_spath_label)
     migrate = FileMigration(JSON_FILE, DOWNLOADS_PATH, status_label)
 
-    status_report(status_label, " Moves all files of a type to pre designated locations")
+    status_report(status_label, " Moves all files by type to pre designated locations.")
     config.load_data()      
     
     main_win.mainloop() 
