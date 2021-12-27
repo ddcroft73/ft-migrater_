@@ -12,6 +12,10 @@
   if the user decides to change it.
   - Click on the + Plus sign next to directory names to more consistently open directories. Double clicking
   also works but it less responsive.
+  - Manage Directory
+     - Delete - Navigate to the directory you want to delete, select it, click Remove. Action cannot be undone.
+     - Create - To create a directory, but not mark it as a destination, navigate to the directory you wish to creae in. Select it. Write in the name. Click Create.
+      
 
 
 ### Selecting\Entering a File type:<br>
