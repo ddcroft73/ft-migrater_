@@ -27,7 +27,8 @@
 #  the export of all file type instructions.    
 # ------------------------------------------------------------------------------------------------ 
 
-
+#TODO: Check to see if the spath in the JSON still exists so the correct path is
+# represented when the combo directort box is loaded
 #TODO add support for other drives
 #TODO Add create directory widgets
 
@@ -158,6 +159,32 @@ def exit_() -> None:
     main_win.destroy()
     exit()
 
+
+def create_directory() -> None:
+    path = label_selected.cget('text')
+    dir = new_directory.get()
+    if os.path.isdir(path) and dir != "":
+        # create the dir, 
+        new_path =os.path.join(path, dir)
+        os.mkdir(new_path)
+        #update the view
+        file_browse.go_upone(path)
+        new_directory.delete(0, tk.END)
+    else: status_report(status_label, "Nothing to Create")    
+
+
+# very careful with this
+def remove_directory() -> None:
+    path = label_selected.cget('text')
+    if path == "": return
+    cont = askquestion("Remove directory", f"You are about to remove {path}\n\nPermenatly from this computer.\n\nAre you sure you want to continue?", icon="warning")
+    if cont == 'yes':
+        if os.path.isdir(path) and dir != "":
+            file_browse.go_upone(path)
+ #           shutil.rmtree(path)
+            new_directory.delete(0, tk.END)
+        else: status_report(status_label, "Nothing to Remove")
+        
 #-----------------------------------------------------------------------------------------
 #  GUI EVENT HANDLERS
 #----------------------------------------------------------------------------------------
@@ -205,9 +232,11 @@ class FileView(object):
         self.directory_box = ttk.Combobox(main_win, textvariable=self.directory_selected, state='readonly')
         self.directory_box['values'] = self.__get_directories()
         self.directory_box.current(0)
-        self.directory_box.place(width=580,x=10, y=20) #510
+        self.directory_box.place(width=350,x=10, y=20) #510
         self.directory_box.bind('<<ComboboxSelected>>', self.__path_changed)
         CreateToolTip(self.directory_box, "Select a directory to view its contents.")
+        
+        # Back button
 
         abspath = os.path.abspath(path)
         self.__insert_node('', abspath, abspath)
@@ -225,7 +254,18 @@ class FileView(object):
     def refresh_directories(self) -> None:
         self.directory_box['values'] = self.__get_directories()
         
-    
+    # go to the parent dir.    
+    def go_upone(self, path) -> None:
+        subs = path.split(os.sep)
+        root = subs[0] + os.sep
+        
+        if path != root and os.path.exists(path):
+            parent = os.sep.join(subs[:-1])
+            self.update_view(parent)
+        else: 
+            status_report(status_label,"Already at root.")    
+        
+
     # works in conjunction with os.path.isfile()
     def isfile(self,path) -> bool:
        res = True
@@ -359,6 +399,18 @@ tabControl.add(tab1, text='Instructions')
 tabControl.add(tab2, text='Path')
 tabControl.place(width=580, height=175,x=10,y=250)
 #==================================== END TAB SETTINGS ==============================================================
+
+#===================================== MANAGE DIRECTORY WIDGETS =========================================================
+
+new_directory = ttk.Entry()
+new_directory.place(width=125, x=413-50, y=20)
+CreateToolTip(new_directory, "Navigate to the directory you want to create in and select it, type in the directory name and click 'Create'")
+create_button = ttk.Button(main_win, text="Create", command=create_directory)   
+create_button.place(width=50,height=23, x=540-50, y=19)
+remove_button = ttk.Button(main_win, text="Remove", command=remove_directory)   
+remove_button.place(width=50,height=23, x=540, y=19)
+CreateToolTip(remove_button, "Navigate to the directory you want to remove and click 'Remove'.")
+#===================================== CREATE DIRECTORY WIDGETS=========================================================
 
 #==================================== SELECTED LABEL\BUTTON =========================================================
 label_selected = ttk.Label(main_win, borderwidth=3, background="white", relief='solid',justify="left")
