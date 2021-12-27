@@ -5,7 +5,12 @@
 #   Creates Destination directories for each file type generated to offere a quick demo of ft-migrater.#    
 #   tracks the locations and file names, so they can easily be removed after demo.
 #   Removes all created directories and files spawneded by the demo 
-#   Will not harm any directories or files not created by demo
+#   Will not remove any directories or files not created by demo
+#   Will not not create a dir inside an existing directory
+#   Will not create sub directories in side root directory
+#   If on creation of the destinations an existing dir is detected. will remove all previousy created
+#   directories and files, exit and report.
+#    
 
 import random
 import os
@@ -17,38 +22,14 @@ import shutil
 # forcing it this way seems to work better.
 THIS_PATH = os.path.dirname(os.path.realpath(__file__))
 LOG = os.path.join(THIS_PATH, "demo.log")
-
 MIGRATE_LOG = "migrate_log.txt"
 
          
+
 def getfile_ext(fname: str) -> str:         
     return fname.split(".")[-1]  
 
 # DEMO CREATION ROUTINES----------------------------------------------------------------------------
-
-def help() -> None:
-    _help = """\
-\n--------------------------------------------------------------------------------\n\
-||  To create the basic demo:\n\
-||    Usage: <path> <numfiles>   (Do not use spaces in directory names.)\n\
-||           <numfiles> may be omitted. Default 10 files will be created.\n\
-||
-||  To create the demo with destination directories:\n\
-||    Usage: <path> <numfiles> <deestination> \n\
-||           <numfile> may be omitted. Default 10 files will be created.\n\
-||           <destination> may be omitted. Assumes existing directory use\n\
-||                         and files will be removed one by one.\n\
-||
-||  Cleanup:\n\
-||    --cleanall    Removes all directories, files and log.\n\
-||    --dir         Removes only files, log.\n\
-||
-||  Will effectively track down all fake files created by this script.
-||  No pre-existing directories will be harmed in this demo \
-\n--------------------------------------------------------------------------------
-    """
-    print(_help) 
-    exit(0)
 
 # Sets up Basic Demonstration
 def create_demo(working_dir: str, num_files: int) -> None:
@@ -59,6 +40,7 @@ def create_demo(working_dir: str, num_files: int) -> None:
     
     try:
        create_working_dir(working_dir)
+       
        for file in file_list: 
            #print(os.path.join(working_dir, file))
            create_file(os.path.join(working_dir, file))
@@ -81,53 +63,62 @@ def rand_fname(name_list: list) -> str:
     rnd_fname = [name_list[random.randint(1,6)] for _ in range(0,random.randint(1,5)) ] 
     return "".join(rnd_fname)
 
-#TODO:
-#  CHANGE 2 Back to 5
-
 # dont allow any duplicates
 def make_filelist(fnames: list, ftypes: list, numfiles: int) -> list:
-    return list(set([rand_fname(fnames) + ftypes[random.randint(0,2)] for _ in range(0,numfiles)]))
+    return list(set([rand_fname(fnames) + ftypes[random.randint(0,5)] for _ in range(0,numfiles)]))
 
-# create new directory(s), Do not allow the user to create a directory inside an existing directory.
+# program acts odd if user adds double os.sep, (as per testing for idiots)
+# create_working_dir() will make weird ass directories
+def cleanup_path(path:str) -> str:    
+    clean_path = [sub for sub in path.split(os.sep) if sub != ""]
+    return os.sep.join(clean_path)
+
+# Creates new directory(s), Do not allow the user to create a directory inside an existing directory.
+# Function may be called 2xs. first to create home path second if applicable to create destinations
+# Function will not execute if user tries to create in an existing path, or tries to create 
+# destinations inside existing paths. If trying to create destinations, and its an existing path
+# or trying to use the root drive to creat destinaitons in, program will raise exception and 
+# delete any previuosly created homepath, and only path as defined in demo.log.
+#
 def create_working_dir(new_dir: str, destinations: bool=False) -> None:      
+    new_dir = cleanup_path(new_dir)
     path = ""
     subs = new_dir.split(os.sep)
     root = os.path.join(subs[0], os.sep) 
-    # only allow directories to be created in root. Check the path to see if  createing 
-    # a dir inside one that exists.
+    # only allow directories to be created if all new, not inside existing        
     try:
+       if len(new_dir) < 4: 
+          path = new_dir 
+          raise Exception  # root exists.. clean and exit
+
        for sub in subs:
            path += (sub+os.sep)
            if path != root:
-               # if any part of this path exists, exit with warning , cleanup previous work
                if os.path.exists(path):
                   raise Exception
                else:
-                   os.mkdir(path)   
+                   print('creating',path)
+                   os.mkdir(path)  
     except:
-        print("Existing path detected.\nCannot create sub directories inside existing directories.")    
-        # if destination run, cleanup the HomePath that was already created.
-        if destinations: deldir()
+        print("Existing path detected.\nCannot create sub directories inside existing directories.")        
+        print(f"Program terminated attempting to make:{path} ")  
+        # if destinations, cleanup the HomePath that was already created.  
+        if destinations:
+            deldir()
+        else:    
+            # If Creating home path destinatioins=False, exit because the program will continue
+            # and create the files, and log the directory if not.destinations will exit inside 
+            # deldir()
+            exit(1)    
             
-
-# allows for deletion of the directories later on.
-def creation_log(start_dir_name: str=None, destinations_dir_name: str=None) -> None:      
-    if start_dir_name:
-        with open(LOG, "w") as log_file:
-            log_file.write(start_dir_name)    
-        print("Demo log created:", os.path.abspath(LOG))        
-
-    elif destinations_dir_name:
-        with open(LOG, "a") as log_file_append:
-            log_file_append.write(" " + destinations_dir_name)    
-        print("Destinations created in", destinations_dir_name)    
-
-# THis will make the demo of ft-migrater a bit faster. Gives the user a ready made 
+# THis will make the demonstration of ft-migrater a bit faster. Gives the user a ready made 
 # destination to move the files to and they dont need to worry about setting up test directories
-# However, Any existing directory can be used.
+# However, Any existing directory can be used. WILL NOT create any sub dirs for the types inside 
+# an existiong directory
 def create_destinations(filetypes: list, path: str) ->None:
     # create a sub directory only for each type in the file_types list
     dirs = set(filetypes)    
+    #create the parent path, if not exists
     create_working_dir(path, destinations=True)
     try:
         # mkes sure create the dir in the right parent.
@@ -141,12 +132,41 @@ def create_destinations(filetypes: list, path: str) ->None:
     except Exception as er:
         print("Error creating sub directories in", path, er)     
         exit(1)   
-    
+
+
+# allows for deletion of the directories later on.
+def creation_log(start_dir_name: str=None, destinations_dir_name: str=None) -> None:      
+    if start_dir_name:
+        with open(LOG, "w") as log_file:
+            log_file.write(start_dir_name)    
+        print("Demo log created:", os.path.abspath(LOG))        
+
+    elif destinations_dir_name:
+        with open(LOG, "a") as log_file_append:
+            log_file_append.write(" " + destinations_dir_name)    
+        print("Destinations appended to log, created in", destinations_dir_name)    
+
+
+def demo_exists() -> bool:
+    if os.path.exists(LOG):
+        return True
+    return False    
+
+def demo_report() -> None:
+    # determine if it was Home and destinations or just home    
+    dest = get_dir_name(destination=True)
+    home = get_dir_name(start=True)
+    if dest == None:
+        print(f"Traces of previous demo found in: \n{home}")
+    else:
+        print(f"Traces of previous demo found in: \n{home}\n{dest}") 
+    print("Run 'fakes --dir' to remove demo, Or delete the log and the directories above.")               
+
 #DEMO REMOVAL ROUTINES --------------------------------------------------------------------------------
 
 #lets me know where to find the migrate_log.txt file
-def get_dir_name(start: bool=False, destination: bool=False) -> str:    
-     
+#
+def get_dir_name(start: bool=False, destination: bool=False) -> str:         
      try: 
         if os.path.exists(LOG):
             if start:
@@ -193,8 +213,8 @@ def get_migratelog_data() -> list:
           file_data = [line.strip("\n") for line in mlog.readlines() if line != "\n" and line[:5] != "FROM:"]
 
     except FileNotFoundError:
-        print("Unable to find migrate_log.txt. Perhaps it was deleted, or the migration was not carried out.")
-        exit(0)
+        print("Unable to find migrate_log.txt. Perhaps it was deleted, or the migration was not carried out.\nAllowing directories to be removed...")
+        file_data = None        
     return file_data   
 
 
@@ -216,21 +236,24 @@ def parse_demofile_paths(data: list) -> list:
 
 # Destroys all generated Fake Demo files . 
 # routine uses the the log generated by ft-migrater to retreive the locations of
-# each file afterthet were  moved. So if the user decides to not create the 
-# destinations path this will  effectively remove all the files. 
+# each file afterthet were  moved to random directories. So if the user decides to not create the 
+# destinations path this will effectively remove all the files. If the user just used the 
+# directories created by the program, then they will be deleted with those directories
+#
 def destroy_demo_files() -> None:
-    mlog_data = get_migratelog_data()
+    mlog_data = get_migratelog_data()    
+    # if not a migrate log, files have not been moved. exit and let 
+    # remove_directory() cleanup
+    if mlog_data == None: return
     demofile_paths = parse_demofile_paths(mlog_data)
     try:
         for path in demofile_paths:
            print("Deleting:", path)
            os.remove(path)
-
     except Exception as er:
         print(f"An error occured removing demo files. {er}")    
 
-    print("All demo files, tracked down and deleted.")       
-
+    print("All demo files, tracked down and deleted.")      
 
 def del_demolog(demo_log) -> None:
     try:
@@ -256,25 +279,40 @@ def deldir() -> None:
 
 #   END DEMO REMOVAL CODE ------------------------------------------------------------------------------------------------    
 
-         
+def help() -> None:
+    _help = """\
+\n--------------------------------------------------------------------------------\n\
+||  To create the basic demo:\n\
+||    Usage: <path> <numfiles>   (Do not use spaces in directory names.)\n\
+||           <numfiles> may be omitted. Default 10 files will be created.\n\
+||
+||  To create the demo with destination directories:\n\
+||    Usage: <path> <numfiles> <deestination> \n\
+||           <numfile> may be omitted. Default 10 files will be created.\n\
+||           <destination> may be omitted. Assumes existing directory use\n\
+||                         and files will be removed one by one.\n\
+||
+||  Cleanup:\n\
+||    --cleanall    Removes all directories, files and log.\n\
+||    --dir         Removes all directories but will not remove any files\n\
+||                  that were moved to existing directories.\n\
+||                  Removes log.
+||
+||  Will effectively track down all fake files created by this program.
+||  No pre-existing directories will be removed by this program. \
+\n--------------------------------------------------------------------------------
+    """
+    print(_help) 
+    exit(0)        
+
 """
-Opted not to use an argumrnt parser, firdt time with CLI so...
+Opted not to use an argumrnt parser, first time with CLI so...
 
 accepts 3 arguments only
 arg[1] - either a path, or a command
 arg[2] - num of files, or path to the destinationd directoies
 arg[3] -path, numfiles, destination
 
-To create the basic demo:
-   C:\path 10, or C:\path If the 2nd is omitted the default 10 files will be created
-
-To create the demo with destination directories:
-   C:\path 10 C:\Destination\path or C:\ path C:\Destintaion\Path   
-
-Cleanup:
-   --cleanall    Removes directories, files, and log
-   --dir         Removes directories created by demo, log
-                 does not remove existing directories  
 """
 def parse_args(arg) -> None:                    
     dest_dir = "" # assume basic demo
@@ -315,15 +353,18 @@ def parse_args(arg) -> None:
 
         case _:           # user has no idea how to use the demo
             help()    
-     
-    #execute the demo. create directories and spawn fake files
-    match doing:
-        case 'full':   
-            files_types = create_demo(start_dir, numfiles) 
-            create_destinations(files_types, dest_dir)
-        case 'basic':
-            create_demo(start_dir, numfiles)
-            
+
+    if not demo_exists(): 
+        #execute the demo. create directories and spawn fake files
+        match doing:
+            case 'full':   
+                files_types = create_demo(start_dir, numfiles) 
+                create_destinations(files_types, dest_dir)
+            case 'basic':
+                create_demo(start_dir, numfiles)
+    else:
+        demo_report()
+        
 
 # START PROGRAM
 if __name__ == '__main__':
