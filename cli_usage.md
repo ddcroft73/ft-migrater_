@@ -28,6 +28,7 @@ Usage:  --flag<homepath> <numfiles> <destinationpath>
                      Delete all demo files.
                      Deletes all stand alone destination paths. No matter how deep
                      Delete demo log
+                     Use this command if you did not create a destination.
        
        --dir         Delete all directories created by demo
                      Delete demo log
