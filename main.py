@@ -64,7 +64,6 @@ def del_directory(path: str) -> None:
     if cont == 'yes':
         file_browse.go_upone(path)
         shutil.rmtree(path)
-        # back step to the parent directory
         parent = os.path.abspath(path)
         file_browse.update_view(getdir_only(parent))
 
@@ -104,6 +103,7 @@ def delete_type() -> None:
 def delete_all() -> None:
     path = curr_spath_label.cget('text')
     config.update_data('delall', spath=path)                    
+
 
 def change_spath() -> None:
     new_spath = label_selected.cget('text') 
@@ -240,7 +240,6 @@ class FileView(object):
     def refresh_directories(self) -> None:
         self.directory_box['values'] = self.__get_directories()
         
-    # go to the parent dir.    
     def go_upone(self, path) -> None:
         subs = path.split(os.sep)
         root = subs[0] + os.sep
@@ -252,6 +251,7 @@ class FileView(object):
         else: 
             status_report(status_label,"Already at root.")    
         
+
     # works in conjunction with os.path.isfile()
     def isfile(self,path) -> bool:
        res = True
@@ -283,7 +283,7 @@ class FileView(object):
 # represented when the combo directort box is loaded
 
     # formats the directories in the root path to be useful as starting points in 
-    # the treeview control. Maintains the root directory and the default Home path
+    # the treeview control. Maintains the root directory and the default sort path
     # as the first 2 always, Downloads folder will always be kept if spath is changed
     def __format_directories(self, lst: list) -> list:
         spath = list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
@@ -313,8 +313,8 @@ class FileView(object):
                 parent_iid = self.tree.parent(parent_iid)
             i = self.tree.item(item, "text")
             path = os.path.join(*node, i)
-
         except Exception or PermissionError:
+            #get a tuple index error here. THis seems to passify it
             path = self.curr_path
         return path      
 
@@ -326,11 +326,11 @@ class FileView(object):
         abspath = self.nodes.pop(node, None)        
         if abspath:
             self.tree.delete(self.tree.get_children(node))
-            # sort the files according to extension
-            files_dirs = sorted([file for file in os.listdir(abspath)], 
-                                 key=lambda x: getfile_ext(x), reverse=True)
+            # sort the files according to extension, want to accomodate mostly zip, pdf, png, so reverse the sort
+            # to make them easier to get at.
+            files_dirs = sorted([file for file in os.listdir(abspath)], key=lambda x: getfile_ext(x), reverse=True)
             for path in files_dirs:
-                if getfile_ext(path) != "ini":  # this could fuck something up if moved.
+                if getfile_ext(path) != "ini":  # this could mess something up if moved.
                    self.__insert_node(node, path, os.path.join(abspath, path))              
 
     def __select_item(self, event=None) -> None:
@@ -350,15 +350,18 @@ class FileView(object):
            if destination != selection:
                filetype_dest_combo.set(selection)
 #TODO               
-# ont let the same path be loaded int to the destination box as the Home path       
-               # Dont thonk  need this.. a bit aggravatioing 
+# ont let the same path be loaded int to the destination box as the Home path            
                """ showinfo("Same Destination", "Can't move to the same destination.\nIf you want to overlook a type, don't set any instructions.")
            else:"""
                
 
-#------------------------------------------------------------------
+#----------------------------------------------------------------------------------
 #  START BULK GUI CODE..  
-#------------------------------------------------------------------ 
+#
+# THe more i thonk aboout this app the more I am certain i could have 
+# designed it so that the entire interfae was wrapped in a class a lot 
+# like i Did the FileView class. Next time...
+#----------------------------------------------------------------------------------- 
 TK_WIDTH = 600
 TK_HEIGHT = 445
 
@@ -507,10 +510,8 @@ CreateToolTip(status_label, "Status Bar")
 if __name__ == '__main__':
  
     # 
-    config = ConfigureJson(JSON_FILE, DOWNLOADS_PATH, filetype_combo, filetype_dest_combo, 
-                  status_label, curr_spath_label, change_spath_label)
+    config = ConfigureJson(JSON_FILE, DOWNLOADS_PATH, filetype_combo, filetype_dest_combo, status_label, curr_spath_label, change_spath_label)
     migrate = FileMigration(JSON_FILE, DOWNLOADS_PATH, status_label)
-
     status_report(status_label, " Moves all files by type to pre designated locations.")
     config.load_data()      
     
