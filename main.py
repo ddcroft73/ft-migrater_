@@ -5,7 +5,7 @@
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
 #       
-#   Win 1- python 3.10 uses match case
+#   Win 10 python 3.10 uses match case
 #
 #   Basic features as per client requirements: 
 #     GUI with display of all files and directories of a predefined path.
@@ -27,9 +27,6 @@
 #  the export of all file type instructions.    
 # ------------------------------------------------------------------------------------------------ 
 
-#TODO: Check to see if the spath in the JSON still exists so the correct path is
-# represented when the combo directort box is loaded
-#TODO add support for other drives
 
 import os
 import subprocess
