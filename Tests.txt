@@ -4,8 +4,8 @@
 # ft-migrater was tested more heavily from day one. Most of these tests were done to make sure the demo
 # didnt leave files\directories behind and delete the wrong things. 
 
-# Basic testing ive done. Nothing automated. By the time i discovered automation the app was so big i had no clue 
-# how to even start. I get the basic idea but I THINK for its purpose this app is pretty solid. Will employ automation
+# Basic testing ive done. Nothing automated. By the time i discovered automation  i had no clue how to
+# even start. I get the basic idea but I THINK for its purpose this app is pretty solid. Will employ automation
 # for the testing and a good library next time.
 
 # BASIC FILE AND DIRECTORY CREATION
