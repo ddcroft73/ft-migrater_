@@ -1,7 +1,7 @@
 # migrate.py
 
 import os
-from configurejson import * # from configurejson import get_data
+from configurejson import * 
 from datetime import datetime
 import shutil
 
