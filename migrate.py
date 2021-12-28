@@ -5,17 +5,17 @@ from configurejson import *
 from datetime import datetime
 import shutil
 
+LOG = "migrate_log.txt" 
 
 """ class Migration-
 Class handles all routines dealing with the movement of files from one directory to 
 another. 
 
+Any file types that are not in the home path, or somehow end up with
+The same From and To paths are ignored. If it doesnt make sense, It shouldnt happen.
+Thats the goal anyway.
+
 """
-#  basic steps to migrate files
-#
-# Make list of all relevent files from the sort path
-# Create dict of From\to paths (use the above list as the keys)
-# loop over dict to move files
 
 
 class FileMigration:     
@@ -38,14 +38,13 @@ class FileMigration:
         else:
             from_to_dict = self.__construct_dict(json_data)
             self.__exec_move_instructions(from_to_dict)
-
    
 
     # get all files to be moved
     def __make_keylist(self, json_data: dict) -> list:
         spath = self.spath
         types = list(json_data[spath].keys())        
-        return [os.path.join(spath,file) for file in os.listdir(spath) if getfile_ext(file) in types]
+        return [os.path.join(spath,file) for file in os.listdir(spath) if getfile_ext(file) in types and file != LOG]
     
     # make a dict to guide the migration key = From : Value = To
     def __construct_dict(self, json_data: dict) -> dict:
@@ -59,7 +58,6 @@ class FileMigration:
 
       # move em one by one        
     def __exec_move_instructions(self, paths) -> None:
-
         for _from, _to in paths.items():
             if not os.path.exists(getdir_only(_to)):
                 self.log_move(note=f"Destintation path created:\n{getdir_only(_to)}")
@@ -79,7 +77,7 @@ class FileMigration:
         now = datetime.now()
         date = now.strftime("%b-%d-%Y") 
         time = now.strftime("%H:%M:%S") 
-        fname = os.path.join(self.spath, "migrate_log.txt")
+        fname = os.path.join(self.spath, LOG)
         
         if from_path and to_path:
             output = f"\nMOVED:  {os.path.basename(from_path)} \nFROM:   {getdir_only(from_path)}  \nTO:     {getdir_only(to_path)}"
@@ -92,8 +90,3 @@ class FileMigration:
 
         with open(fname, "a") as f:
             f.write(output + "\n")
-
-"""
-        with open("./temp.json", "w") as file:
-            json.dump(paths, file, indent=4)
-"""
