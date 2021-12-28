@@ -20,12 +20,13 @@
 # C:\Test\\                      simple with 2 trailing \\                 PASSED      Created a function to erradicate any double seps
 #                                                                                      
 # C:\\Test                       simple with extra \                       PASSED      The path error was caught and execution halted 
-# C:\Test 500                    simple with 10 files                      PASSED      Demo will create less files the higher the number is 
+# C:\Test 500                    simple with 500 files                     PASSED      Demo will create less files the higher the number is 
 # C:\Users                       simple in existing directory              PASSED      Will not create a homePath in an existing directory
 # C:\Test\demo\demo\demo\demo    simple with deep subs                     PASSED      Able to create as many subs as needed
 
 # FULL DEMO
 #-------------------------------
+
 # C:\Test 10 C:\destination      full basic                                PASSED      
 # C:\Test 10 C:\Test             destination in same as Home               PASSED     Can't create in existing directory.
 # C:\Test C:\destination         full default number files                 PASSED   
