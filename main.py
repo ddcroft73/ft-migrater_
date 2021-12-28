@@ -1,6 +1,6 @@
 
 # ------------------------------------------------------------------------------------------------
-#  File Migrater -   main.py  Dec, 2021   DCroft @HobblinCobbller
+#  File Migrater -   main.py  Dec, 2021   DCroft 
 #
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
@@ -190,7 +190,7 @@ def type_destination_changed(event=None):
 
 
 """ FileView class
-treeview w/bundled widgets - DCroft (HobblinCobbler) 12Dec2021
+treeview w/bundled widgets - DCroft 12Dec2021
 Handles click selection of file and double click selection of directory
 HAndles all loading, saving, manipulation of path information used to populate
 and run the treeView, and combobox at the top to deliver the paths 
