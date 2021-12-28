@@ -72,7 +72,7 @@ def cleanup_path(path:str) -> str:
     clean_path = [sub for sub in path.split(os.sep) if sub != ""]
     return os.sep.join(clean_path)
 
-# Creates new directory(s), Do not allow the user to create a directory inside an existing directory.
+# Creates new directory(s), Will not allow the user to create a directory inside an existing directory.
 # Function may be called 2xs. first to create home path second if applicable to create destinations
 # Function will not execute if user tries to create in an existing path, or tries to create 
 # destinations inside existing paths. If trying to create destinations, and its an existing path
@@ -84,7 +84,7 @@ def create_working_dir(new_dir: str, destinations: bool=False) -> None:
     path = ""
     subs = new_dir.split(os.sep)
     root = os.path.join(subs[0], os.sep) 
-    # only allow directories to be created if all new, not inside existing        
+    
     try:
        if len(new_dir) < 4: 
           path = new_dir 
@@ -121,7 +121,6 @@ def create_destinations(filetypes: list, path: str) ->None:
     create_working_dir(path, destinations=True)
     try:
         # mkes sure create the dir in the right parent.
-        # dont need the full path
         os.chdir(path)
         for dir in dirs:
           if not os.path.exists(dir):
@@ -152,7 +151,6 @@ def demo_exists() -> bool:
     return False    
 
 def demo_report() -> None:
-    # determine if it was Home and destinations or just home    
     dest = get_dir_name(destination=True)
     home = get_dir_name(start=True)
     if dest == None:
@@ -180,8 +178,7 @@ def get_dir_name(start: bool=False, destination: bool=False) -> str:
             exit(1)
      except IndexError:
         # this just means the user did not create a new destination direcctory
-        # and opted to use existing. There is no path to retreive. 
-       
+        # and opted to use existing. There is no path to retreive.        
         dir_name = None
      return dir_name
 
@@ -265,7 +262,8 @@ def del_demolog(demo_log) -> None:
         os.remove(demo_log) 
         print("demo log deleted.")
     except Exception as er:
-        print("error deleting demo log...", er)    
+        print("error deleting demo log...", er)   
+        exit(1)
 
 
 # Cleanup routines
@@ -275,9 +273,7 @@ def deldir() -> None:
     del_demolog(LOG)    
     exit(0)
 
-# Even though this function will facilitate a total clean of all directories created by sript
-# It is best utilized when ft-migrter moves files to random directories selected by user.
-# its main goal is to seek and destroy files
+
 def cleanall() -> None:    
     destroy_demo_files()
     deldir()
