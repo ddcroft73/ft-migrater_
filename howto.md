@@ -13,8 +13,9 @@
   - Click on the + Plus sign next to directory names to more consistently open directories. Double clicking
   also works but it less responsive.
   - Click the small button witht the '<' to navigate to the parent of the current directory.
-  - Manage Directory
-     - Delete - Navigate to the directory you want to delete, select it, click Remove. This action cannot be undone.
+  - Manage Files\Directories
+     - Delete directory- Navigate to the directory you want to delete, select it, click Delete. This action cannot be undone. 
+     - Delete File (Recycle Bin) Select the file you want to remove and click Delete.
      - Create - To create a directory, but not mark it as a destination, navigate to the directory you wish to create in. Select it. Type in the name. Click Create.
       
 
