@@ -13,6 +13,8 @@
 # simple DEMO
 #-------------------------------
 # C:\Test                        simple no files                           PASSED
+# 10 C:\TEst                     backwards arguments                       PASSED     Added conditional statements to only allow the correct 
+                                                                                      Types in all aruments
 # C:\Test 10                     simple with 10 files                      PASSED
 # C:\Test\                       simple with trailing \                    PASSED
 # C:\Test\\                      simple with 2 trailing \\                 PASSED      Created a function to erradicate any double seps
@@ -25,11 +27,14 @@
 # FULL DEMO
 #-------------------------------
 # C:\Test 10 C:\destination      full basic                                PASSED      
+# C:\Test 10 C:\Test             destination in same as Home               PASSED     Can't create in existing directory.
 # C:\Test C:\destination         full default number files                 PASSED   
 # C:\Test 10 C:\Users            full with existing dir as destination     PASSED      Demo stops, previous home dir removed, files, and log 
 # C:\Test C:\\destination        full default number files                 PASSED      double seps on destinations dir
 # C:\Test C:\                    full create on root                       PASSED      Cannont create dirs in root. root exists. this results
-#                                                                                      in a back track and removal of all previous work
+#                                                                                      in a back track and removal of all previous work.. This would
+                                                                                       actually be ok. Demo will not attempt to delete root, but
+                                                                                       still will not let it happen.
 # C:\ test 10 C:\destinations    accidental space in arg 1                 PASSED      terminates thinking user tried to create existing dir, C: 
 # C:\test  10                    accidental space between 1 and 2 making 
 #                                arg2 now arg3, non int type               PASSED      Space overlooked 
