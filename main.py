@@ -54,15 +54,16 @@ JSON_FILE = './instructions.json'
 #----------------------------------------------------------------------------------------
 def del_file(path: str) -> None:
     cont = ""
-    cont =askquestion("Send to Recycle Bin", "Are you are sure you want to delete: " + path + "\n\nContinue?", icon='question') 
+    cont =askquestion("Send to Recycle Bin", f"Are you are sure you want to delete: {path}\n\nContinue?", icon='question') 
     if cont == 'yes':
         send2trash(path)
         file_browse.update_view(getdir_only(path)) 
 
 def del_directory(path: str) -> None:
     cont = ""
-    cont =askquestion("Delete directory", "Are you are sure you want to delete: " + path + " \nand all it's contents? \nThis cannot be undone. \n\nContinue?", icon='question') 
+    cont =askquestion("Delete directory", f"Are you are sure you want to delete: {path}\nand all it's contents? \nThis cannot be undone. \n\nContinue?", icon='question') 
     if cont == 'yes':
+        file_browse.go_upone(path)
         shutil.rmtree(path)
         # back step to the parent directory
         parent = os.path.abspath(path)
@@ -71,7 +72,7 @@ def del_directory(path: str) -> None:
 def delete_path() -> None:  
     path = label_selected.cget('text')
     if label_selected.cget('text') == "":
-        status_report(status_label," Nothing to delete.")
+        status_report(status_label," Nothing to remove.")
         return
 
     if os.path.isfile(path):
@@ -168,23 +169,15 @@ def create_directory() -> None:
         new_path =os.path.join(path, dir)
         os.mkdir(new_path)
         #update the view
-        file_browse.go_upone(path)
+        file_browse.update_view(path)
         new_directory.delete(0, tk.END)
+        status_report(status_label, f"Created {new_path}")
     else: status_report(status_label, "Nothing to Create")    
 
 
-# very careful with this
-def remove_directory() -> None:
-    path = label_selected.cget('text')
-    if path == "": return
-    cont = askquestion("Remove directory", f"You are about to remove {path}\n\nPermenatly from this computer.\n\nAre you sure you want to continue?", icon="warning")
-    if cont == 'yes':
-        if os.path.isdir(path) and dir != "":
-            file_browse.go_upone(path)
- #           shutil.rmtree(path)
-            new_directory.delete(0, tk.END)
-        else: status_report(status_label, "Nothing to Remove")
-        
+def upone_directoryy() -> None:
+    file_browse.go_upone(label_selected.cget('text'))
+            
 #-----------------------------------------------------------------------------------------
 #  GUI EVENT HANDLERS
 #----------------------------------------------------------------------------------------
@@ -232,7 +225,7 @@ class FileView(object):
         self.directory_box = ttk.Combobox(main_win, textvariable=self.directory_selected, state='readonly')
         self.directory_box['values'] = self.__get_directories()
         self.directory_box.current(0)
-        self.directory_box.place(width=350,x=10, y=20) #510
+        self.directory_box.place(width=312,x=10, y=20) #510
         self.directory_box.bind('<<ComboboxSelected>>', self.__path_changed)
         CreateToolTip(self.directory_box, "Select a directory to view its contents.")
         
@@ -261,6 +254,7 @@ class FileView(object):
         
         if path != root and os.path.exists(path):
             parent = os.sep.join(subs[:-1])
+            label_selected.configure(text=parent)
             self.update_view(parent)
         else: 
             status_report(status_label,"Already at root.")    
@@ -366,7 +360,7 @@ class FileView(object):
         if not os.path.isfile(selection):
            if destination != selection:
                filetype_dest_combo.set(selection)
-               # Dont think this is necessary
+#TODO               
 # ont let the same path be loaded int to the destination box as the Home path            
                """ showinfo("Same Destination", "Can't move to the same destination.\nIf you want to overlook a type, don't set any instructions.")
            else:"""
@@ -402,18 +396,20 @@ tabControl.place(width=580, height=175,x=10,y=250)
 
 #===================================== MANAGE DIRECTORY WIDGETS =========================================================
 
+upone_button = ttk.Button(main_win, text="<", command=upone_directoryy)   
+upone_button.place(width=30,height=23, x=322, y=19)
+CreateToolTip(upone_button, "Go to parent directory")
 new_directory = ttk.Entry()
-new_directory.place(width=125, x=413-50, y=20)
-CreateToolTip(new_directory, "Navigate to the directory you want to create in and select it, type in the directory name and click 'Create'")
+new_directory.place(width=175, x=413-60, y=20)
+CreateToolTip(new_directory, "Type in the directory name, navigate to the parent, and click 'Create'")
 create_button = ttk.Button(main_win, text="Create", command=create_directory)   
-create_button.place(width=50,height=23, x=540-50, y=19)
-remove_button = ttk.Button(main_win, text="Remove", command=remove_directory)   
-remove_button.place(width=50,height=23, x=540, y=19)
-CreateToolTip(remove_button, "Navigate to the directory you want to remove and click 'Remove'.")
+create_button.place(width=57,height=23, x=530, y=19)
+CreateToolTip(create_button, "Navigate to the directory you want to create in and select it, type in the new directory name and click 'Create'")
+
 #===================================== CREATE DIRECTORY WIDGETS=========================================================
 
 #==================================== SELECTED LABEL\BUTTON =========================================================
-label_selected = ttk.Label(main_win, borderwidth=3, background="white", relief='solid',justify="left")
+label_selected = ttk.Label(main_win, borderwidth=3, relief='solid',justify="left") # background="white",
 label_selected.place(height=23, width=575, x=(10), y=225)
 CreateToolTip(label_selected,"The current directory being sorted.")
 # 
@@ -433,7 +429,7 @@ file_type = tk.StringVar()
 filetype_combo = ttk.Combobox(tab1, textvariable=file_type, state='readwrite')
 filetype_combo.place(width=50, height=20, x=10, y=30)
 filetype_combo.bind('<<ComboboxSelected>>', filetype_changed)
-CreateToolTip(filetype_combo, text="Enter a file type to be sorted, or slect a file above ans the type will be entered.") 
+CreateToolTip(filetype_combo, text="Enter a file type to be moved, or select a file above and the type will be entered for you.") 
 #========================================== END FILE TYPES =======================================================
 
 #========================================== HOMEPATH TAB1 ========================================================
