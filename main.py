@@ -30,7 +30,6 @@
 #TODO: Check to see if the spath in the JSON still exists so the correct path is
 # represented when the combo directort box is loaded
 #TODO add support for other drives
-#TODO Add create directory widgets
 
 import os
 import subprocess
@@ -92,7 +91,6 @@ def save() -> None:
         path = curr_spath_label.cget('text')
         config.update_data('add', ftype=filetype, spath=path, destination=destination)
 
-# deletes the file type instructions
 def delete_type() -> None:
     filetype = filetype_combo.get()
     path = curr_spath_label.cget('text')
@@ -107,7 +105,6 @@ def delete_all() -> None:
     path = curr_spath_label.cget('text')
     config.update_data('delall', spath=path)                    
 
-# Saves a new path as the Sort Path
 def change_spath() -> None:
     new_spath = label_selected.cget('text') 
     if new_spath == "":
@@ -165,10 +162,8 @@ def create_directory() -> None:
     path = label_selected.cget('text')
     dir = new_directory.get()
     if os.path.isdir(path) and dir != "":
-        # create the dir, 
         new_path =os.path.join(path, dir)
         os.mkdir(new_path)
-        #update the view
         file_browse.update_view(path)
         new_directory.delete(0, tk.END)
         status_report(status_label, f"Created {new_path}")
@@ -229,8 +224,6 @@ class FileView(object):
         self.directory_box.bind('<<ComboboxSelected>>', self.__path_changed)
         CreateToolTip(self.directory_box, "Select a directory to view its contents.")
         
-        # Back button
-
         abspath = os.path.abspath(path)
         self.__insert_node('', abspath, abspath)
         self.tree.bind('<<TreeviewOpen>>', self.__open_node)
@@ -259,7 +252,6 @@ class FileView(object):
         else: 
             status_report(status_label,"Already at root.")    
         
-
     # works in conjunction with os.path.isfile()
     def isfile(self,path) -> bool:
        res = True
@@ -274,7 +266,6 @@ class FileView(object):
             self.tree.insert(node, 'end')      
     
     def __set_path(self, path: str) -> None:  
-        # sets the treeview on a path  directory
         self.tree.delete(*self.tree.get_children())      
         self.__insert_node('', path, path)  
         self.__update_path(path)   
@@ -290,16 +281,14 @@ class FileView(object):
 
 #TODO: Check to see if the spath in the JSON still exists so the correct path is
 # represented when the combo directort box is loaded
-#TODO add support for other drives
 
     # formats the directories in the root path to be useful as starting points in 
-    # the treeview control. Maintains the root directory and the default sort path
+    # the treeview control. Maintains the root directory and the default Home path
     # as the first 2 always, Downloads folder will always be kept if spath is changed
     def __format_directories(self, lst: list) -> list:
         spath = list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
         first_two = [os.path.abspath(os.sep)] + [os.path.join(spath)]  
-        dloads_path = [os.path.join(DOWNLOADS_PATH)]
-        
+        dloads_path = [os.path.join(DOWNLOADS_PATH)]        
         # if the default path was changed, retain access to the Downloads dir
         if spath != DOWNLOADS_PATH:          
             first_two += dloads_path
@@ -361,7 +350,8 @@ class FileView(object):
            if destination != selection:
                filetype_dest_combo.set(selection)
 #TODO               
-# ont let the same path be loaded int to the destination box as the Home path            
+# ont let the same path be loaded int to the destination box as the Home path       
+               # Dont thonk  need this.. a bit aggravatioing 
                """ showinfo("Same Destination", "Can't move to the same destination.\nIf you want to overlook a type, don't set any instructions.")
            else:"""
                
