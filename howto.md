@@ -12,6 +12,7 @@
   if the user decides to change to another home path.
   - Click on the + Plus sign next to directory names to more consistently open directories. Double clicking
   also works but it less responsive.
+  - Click the small button witht the '<' to navigate to the parent of the current directory.
   - Manage Directory
      - Delete - Navigate to the directory you want to delete, select it, click Remove. This action cannot be undone.
      - Create - To create a directory, but not mark it as a destination, navigate to the directory you wish to create in. Select it. Type in the name. Click Create.
