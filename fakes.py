@@ -117,7 +117,6 @@ def create_working_dir(new_dir: str, destinations: bool=False) -> None:
 def create_destinations(filetypes: list, path: str) ->None:
     # create a sub directory only for each type in the file_types list
     dirs = set(filetypes)    
-    #create the parent path, if not exists
     create_working_dir(path, destinations=True)
     try:
         # mkes sure create the dir in the right parent.
@@ -205,7 +204,7 @@ def remove_directory(path: str) -> None:
 
 
 def get_migratelog_data() -> list:
-    # look for the"migrate_log.txt" in the demo\START directory
+    # look for the"migrate_log.txt" in the demo\START directory left by ft-migrater
     demo_dir = get_dir_name(start=True)
     migrate_log_path = os.path.join(demo_dir, MIGRATE_LOG)
     
@@ -337,6 +336,7 @@ def parse_args(arg) -> None:
                    doing = 'basic'
                    start_dir = arg[1]
                    numfiles = DEF_FILES_NUM     
+                    
         case 3:           # user entered 2 arguments,  
             # one is demo path, 2 is either numfiles, or destination path 
             if arg[2].isdigit():
@@ -348,9 +348,9 @@ def parse_args(arg) -> None:
                 start_dir = arg[1]
                 dest_dir = arg[2]
                 numfiles = DEF_FILES_NUM                
+                
         case 4:           # user entered 3 arguments
             # path, numfiles, destination path
-
             doing = 'full'
             start_dir = arg[1]
             numfiles = int(arg[2]) if arg[2].isdigit() else DEF_FILES_NUM
