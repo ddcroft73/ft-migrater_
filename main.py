@@ -1,6 +1,6 @@
 
 # ------------------------------------------------------------------------------------------------
-#  File Migrater -   main.py  Dec, 2021   DCroft @HobblinCobbller
+#  File Type Migrater ft-migrater-   main.py  Dec, 2021   DCroft 
 #
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
@@ -27,9 +27,11 @@
 #  the export of all file type instructions.    
 # ------------------------------------------------------------------------------------------------ 
 
-#TODO: Check to see if the spath in the JSON still exists so the correct path is
-# represented when the combo directort box is loaded
-#TODO add support for other drives
+#TODO WOrk on nodes oening on view\update instead of having to manually open each
+# diretory.
+# Work on the Back upone function of treeview
+# add support for other drives
+# maybe incorporate 2 treeviews and redesign the relationship between Drive\Directories\Files
 
 #import os
 import subprocess
@@ -177,7 +179,7 @@ def upone_directoryy() -> None:
 def load_homepath() -> str:    
     path = list(config.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
     if not os.path.exists(path):
-        showinfo("Home Path Not Found", "The current home path can not be found. ", icon='info')
+        showinfo("Home Path Not Found", "The current home path can not be found.", icon='info')
         return DOWNLOADS_PATH
     return path            
 
@@ -244,7 +246,6 @@ class FileView(object):
         # Dont allow any Bullshit to influence the treeview
         if os.path.isfile(path) or os.path.isdir(path):
            self.__set_path(os.path.join(abspath, path))
-## NEW           
            self.__update_path(path)
 
     def refresh_directories(self) -> None:
@@ -289,9 +290,6 @@ class FileView(object):
         cdrive_paths = [p for p in os.listdir(os.path.abspath(os.sep))]   
         return self.__format_directories(cdrive_paths)
 
-#TODO: Check to see if the spath in the JSON still exists so the correct path is
-# represented when the combo directort box is loaded
-
     # formats the directories in the root path to be useful as starting points in 
     # the treeview control. Maintains the root directory and the default sort path
     # as the first 2 always, Downloads folder will always be kept if spath is changed
@@ -329,21 +327,14 @@ class FileView(object):
         return path      
 
     def __path_changed(self,event=None) -> None:
-        # alert if the path is no longet viable
-        #spath = list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
-#        if os.path.exists(spath):
         self.update_view(self.directory_selected.get())  
-#        else: 
-#            self.tree.heading('#0', text=f"{spath} has been removed", anchor='w') 
-#            self.update_view(f"{spath} has been removed")  
-
 
     def __open_node(self, event=None) -> None:
         node = self.tree.focus()
         abspath = self.nodes.pop(node, None)        
         if abspath:
             self.tree.delete(self.tree.get_children(node))
-            # sort the files according to extension, want to accomodate mostly zip, pdf, png, so reverse the sort
+            # sort the files according to extension, want to accomodate first zip, pdf, png, so reverse the sort
             # to make them easier to get at.
             files_dirs = sorted([file for file in os.listdir(abspath)], key=lambda x: getfile_ext(x), reverse=True)
             for path in files_dirs:
@@ -367,7 +358,8 @@ class FileView(object):
            if destination != selection:
                filetype_dest_combo.set(selection)
 #TODO               
-# ont let the same path be loaded int to the destination box as the Home path            
+# Dont let the same path be loaded int to the destination box as the Home path    
+               # This is juat aggravating 
                """ showinfo("Same Destination", "Can't move to the same destination.\nIf you want to overlook a type, don't set any instructions.")
            else:"""
                
@@ -375,9 +367,9 @@ class FileView(object):
 #----------------------------------------------------------------------------------
 #  START BULK GUI CODE..  
 #
-# THe more i thonk aboout this app the more I am certain i could have 
-# designed it so that the entire interfae was wrapped in a class a lot 
-# like i Did the FileView class. Next time...
+# THe more i think about this app the more I am certain i could have 
+# designed it so that the entire interface was wrapped in a class a lot 
+# like i Did the FileView class. 
 #----------------------------------------------------------------------------------- 
 TK_WIDTH = 600
 TK_HEIGHT = 445
