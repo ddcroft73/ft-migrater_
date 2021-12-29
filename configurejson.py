@@ -53,7 +53,7 @@ class ConfigureJson:
         data = self.get_data(self.json_file, self.default_path)
         self.__populate_widgets(data)
         
-    # Designates a new Sort Path
+    # Designates a new Sort/Home Path
     def change_spath(self, new_spath: str) -> None:
         data = self.get_data(self.json_file)
         old_spath = list(self.curr_json_data.keys())[0]
@@ -159,7 +159,7 @@ class ConfigureJson:
               status_report(self.status, f" File Type: {ftype.upper()} has already been marked for this destination.")
               return
 
-        # make sure the destination exists...
+       
         if not os.path.exists(destination):
             cont = askquestion("No such directory", f"{destination} does not exist.\nSave anyway?")
             if cont == 'no': return        
