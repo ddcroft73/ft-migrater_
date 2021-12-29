@@ -9,7 +9,7 @@
   existing directories if desired. 
 ---  
  
-fakes.py attempts to offer a clean precise file and directory setup with which to demo [ft-migrater](). If for any reason the program exits, it will clean up all directories and files if any, it has created. Since all directories created will be removed it is not allowed to create sub directories for the demo inside pre-existing directoreis. If the user does not create the destination and wishes to move the demo files in preexisting directories, thes directories will not be removed but the files will be tracked down and deleted one by one.
+[demo.py](/ft-migrater_/demo.py) attempts to offer a clean precise file and directory setup with which to demo [ft-migrater](). If for any reason the program exits, it will clean up all directories and files if any, it has created. Since all directories created will be removed it is not allowed to create sub directories for the demo inside pre-existing directoreis. If the user does not create the destination and wishes to move the demo files in preexisting directories, thes directories will not be removed but the files will be tracked down and deleted one by one.
 
 ---
 ~~~
