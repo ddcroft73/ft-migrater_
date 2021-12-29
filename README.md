@@ -1,5 +1,5 @@
 
-![](ft-migrater3_crop(2).png)<br><br>
+![](/images/ft-migrater3_crop(2).png)<br><br>
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 
