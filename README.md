@@ -13,6 +13,7 @@ Made on win 10 with python 3.10
   
    - GUI will display all files and directories of a predefined path. 
    - Ability to move selected files to Recycle Bin. 
+   - Create and delete directories as needed.
    - Easy Selection of file types and destinantions. 
    - Complete no typing interface. (Destnations may still be typed.)<br>
      *If a destination does not exist, it will be created. new directories can be quickly<br> 
@@ -23,7 +24,7 @@ Made on win 10 with python 3.10
    - Widgets should update according to any relative info, and only relative info<br>
      *when a file is selected a destination will display, if an instruction has been set.<br>
      Will remain blank if not*
-   - Only files in the path to be sorted, "homne path" will be regarded.
+   - Only files in the path to be sorted, "home path" will be regarded.
    - JSon file viewer (the instructions can be hand edited and the program will adhere)
    - Maintains a log of all files moved with *To: FROM:* information.
    - Log viewer
