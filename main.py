@@ -203,7 +203,7 @@ def type_destination_changed(event=None):
 
 
 """ FileView class
-treeview w/bundled widgets - DCroft (HobblinCobbler) 12Dec2021
+treeview w/bundled widgets - DCroft  12Dec2021
 Handles click selection of file and double click selection of directory
 HAndles all loading, saving, manipulation of path information used to populate
 and run the treeView, and combobox at the top to deliver the paths 
