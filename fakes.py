@@ -345,11 +345,11 @@ def parse_args(arg) -> None:
             if arg[2].isdigit():
                 doing = 'basic'
                 start_dir = arg[1] if not arg[1].isdigit() else help()
-                numfiles = int(arg[2]) if arg[2].isdigit() else DEF_FILES_NUM
+                numfiles = int(arg[2]) 
             else:  # path, destPath
                 doing = 'full'    
                 start_dir = arg[1] if not arg[1].isdigit() else help()
-                dest_dir = arg[2] if arg[2].isdigit() else DEF_FILES_NUM
+                dest_dir = arg[2] 
                 numfiles = DEF_FILES_NUM                
         case 4:           # user entered 3 arguments
             # path, numfiles, destination path
