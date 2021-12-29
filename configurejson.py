@@ -35,39 +35,27 @@ class ConfigureJson:
         self.change_spath_label = change_spath_label
 
     
-    # a litte different than __get_data() warns if data is corrupted, does not create json
-    # will catch the corruption before __get_data() and let __get_data() fix the problem on 
-    # restart. Lets the user know there was a problem instead of just fixing it. Most likely the 
-    # json file was edited poorly or all data was wiped.
-    @staticmethod 
-    def get_data(fname: str, default_path: str, path_check: bool=False)-> dict:        
+    def get_data(self, fname: str, default_path: str=None) -> dict:  
         try: 
            with open(fname) as file:
-              data = json.load(file)  
-           
-           # Just notify, may go back later and load a different path, but what path to load? Probably best to just 
-           # alert so user does not forget and wonder why no data is present in the treeview.
-           if path_check:
-             if not os.path.exists(list(data.keys())[0]):
-                showinfo("Home Path Not Found", "The current home path can not be found.", icon='info')
-                   
-        except FileNotFoundError:  
-           # Something to start with 
-           data = {  
-             default_path : {}
-          }              
+              data = json.load(file)           
+        except FileNotFoundError:     
+          data = self.__create_json(fname, default_path) 
+
         except IndexError:
             showinfo("No Data Found", "JSon data has been corrupted. Restart program to create new file with default path.")
-            os.remove(fname)    
+            os.remove(fname) 
+
+        self.curr_json_data = data  
         return data
 
     def load_data(self) -> None:
-        data = self.__get_data(self.json_file, self.default_path)
+        data = self.get_data(self.json_file, self.default_path)
         self.__populate_widgets(data)
         
-    # Designates a new Home Path
+    # Designates a new Sort Path
     def change_spath(self, new_spath: str) -> None:
-        data = self.__get_data(self.json_file)
+        data = self.get_data(self.json_file)
         old_spath = list(self.curr_json_data.keys())[0]
         data[new_spath] = data[old_spath]        
         del data[old_spath]
@@ -90,11 +78,12 @@ class ConfigureJson:
     # WHen a new spath (Home Path) is saved. Makes sure 
     # im still working with current data
     def refresh_data(self) -> None:
-        data = self.__get_data(self.json_file)
+        data = self.get_data(self.json_file)
         self.curr_json_data = data
 
     def update_data(self, action: str, ftype: str=None,destination: str=None, spath: str=None) -> None:
-        data = self.__get_data(self.json_file)
+        data = self.get_data(self.json_file)
+
         match action:        
             case "add":                
                 self.__add(data, ftype, destination, spath)
@@ -127,16 +116,7 @@ class ConfigureJson:
         self.__write(fname, d_template)
         return d_template        
         
-    def __get_data(self, fname: str, default_path: str=None) -> dict:  
-        try: 
-           with open(fname) as file:
-              data = json.load(file)           
-        except FileNotFoundError:     
-          data = self.__create_json(fname, default_path) 
-
-        self.curr_json_data = data  
-        return data
-
+    
     def __dividata(self, whatpart: str, d_data: dict) -> list:
         spath = list(d_data.keys())[0]
         match whatpart:
@@ -179,10 +159,11 @@ class ConfigureJson:
               status_report(self.status, f" File Type: {ftype.upper()} has already been marked for this destination.")
               return
 
+        # make sure the destination exists...
         if not os.path.exists(destination):
             cont = askquestion("No such directory", f"{destination} does not exist.\nSave anyway?")
             if cont == 'no': return        
-        # save or update to new destination
+        # save new instruction or update to new destination
         data[spath].update({ftype : destination})
         self.instruction_report(ftype, destination) 
 

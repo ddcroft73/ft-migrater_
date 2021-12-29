@@ -1,11 +1,11 @@
 
 # ------------------------------------------------------------------------------------------------
-#  File Migrater -   main.py  Dec, 2021   DCroft 
+#  File Migrater -   main.py  Dec, 2021   DCroft @HobblinCobbller
 #
 #   A simple JSon editor GUI. Given a directory full of random files,exports the 
 #   files across the computer using instructions set by the user. 
 #       
-#   Win 10 python 3.10 uses match case
+#   Win 1- python 3.10 uses match case
 #
 #   Basic features as per client requirements: 
 #     GUI with display of all files and directories of a predefined path.
@@ -27,8 +27,11 @@
 #  the export of all file type instructions.    
 # ------------------------------------------------------------------------------------------------ 
 
+#TODO: Check to see if the spath in the JSON still exists so the correct path is
+# represented when the combo directort box is loaded
+#TODO add support for other drives
 
-import os
+#import os
 import subprocess
 import tkinter as tk
 from tkinter import ttk
@@ -38,7 +41,7 @@ import shutil
 
 # required classes
 from configurejson import *
-from toolTips import *
+from toolTips import CreateToolTip
 from migrate import *
   
 # Refactor all code to use pathlib instead of os... or maybe just use it next time  
@@ -126,7 +129,7 @@ def view_json() -> None:
     subprocess.call(['notepad.exe', JSON_FILE])  
 
 def view_log() -> None:
-    path = list(ConfigureJson.get_data(JSON_FILE,DOWNLOADS_PATH).keys())[0]
+    path = list(config.get_data(JSON_FILE,DOWNLOADS_PATH).keys())[0]
     fname = os.path.join(path, "migrate_log.txt")
     if os.path.exists(fname):
         subprocess.call(['notepad.exe', fname])
@@ -135,7 +138,7 @@ def view_log() -> None:
 
 def number_files() -> str:
     # So the user knows how many files are about to be moved.
-    data = ConfigureJson.get_data(JSON_FILE,DOWNLOADS_PATH)
+    data = config.get_data(JSON_FILE,DOWNLOADS_PATH)
     spath = list(data.keys())[0]
     types = list(data[spath].keys()) 
     cnt = 0
@@ -166,10 +169,18 @@ def create_directory() -> None:
         status_report(status_label, f"Created {new_path}")
     else: status_report(status_label, "Nothing to Create")    
 
-
 def upone_directoryy() -> None:
     file_browse.go_upone(label_selected.cget('text'))
-            
+
+# Checks to see if the homepath in the json is valid. 
+# return it if it is, alert if not, load default path
+def load_homepath() -> str:    
+    path = list(config.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
+    if not os.path.exists(path):
+        showinfo("Home Path Not Found", "The current home path can not be found. ", icon='info')
+        return DOWNLOADS_PATH
+    return path            
+
 #-----------------------------------------------------------------------------------------
 #  GUI EVENT HANDLERS
 #----------------------------------------------------------------------------------------
@@ -190,7 +201,7 @@ def type_destination_changed(event=None):
 
 
 """ FileView class
-treeview w/bundled widgets - DCroft 12Dec2021
+treeview w/bundled widgets - DCroft (HobblinCobbler) 12Dec2021
 Handles click selection of file and double click selection of directory
 HAndles all loading, saving, manipulation of path information used to populate
 and run the treeView, and combobox at the top to deliver the paths 
@@ -233,6 +244,8 @@ class FileView(object):
         # Dont allow any Bullshit to influence the treeview
         if os.path.isfile(path) or os.path.isdir(path):
            self.__set_path(os.path.join(abspath, path))
+## NEW           
+           self.__update_path(path)
 
     def refresh_directories(self) -> None:
         self.directory_box['values'] = self.__get_directories()
@@ -283,7 +296,7 @@ class FileView(object):
     # the treeview control. Maintains the root directory and the default sort path
     # as the first 2 always, Downloads folder will always be kept if spath is changed
     def __format_directories(self, lst: list) -> list:
-        spath = list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
+        spath = list(config.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
         first_two = [os.path.abspath(os.sep)] + [os.path.join(spath)]  
         dloads_path = [os.path.join(DOWNLOADS_PATH)]        
         # if the default path was changed, retain access to the Downloads dir
@@ -316,7 +329,14 @@ class FileView(object):
         return path      
 
     def __path_changed(self,event=None) -> None:
+        # alert if the path is no longet viable
+        #spath = list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH).keys())[0]
+#        if os.path.exists(spath):
         self.update_view(self.directory_selected.get())  
+#        else: 
+#            self.tree.heading('#0', text=f"{spath} has been removed", anchor='w') 
+#            self.update_view(f"{spath} has been removed")  
+
 
     def __open_node(self, event=None) -> None:
         node = self.tree.focus()
@@ -369,12 +389,10 @@ TK_Y = int(main_win.winfo_screenheight()/2.5 - TK_HEIGHT/2)
 main_win.geometry(f"{TK_WIDTH}x{TK_HEIGHT}+{TK_X}+{TK_Y}")
 main_win.resizable(False,False)
 main_win.title('ft-migrater v1') # load the current version to the title
-#      TreeView
+#      TreeView Frame
 tree_frame = ttk.LabelFrame(main_win, borderwidth=15)
 tree_frame.place(height=200, width=TK_WIDTH -10, x=3, y=25)
-file_browse = FileView(tree_frame,
-                       path=list(ConfigureJson.get_data(JSON_FILE, DOWNLOADS_PATH, path_check=True).keys())[0], 
-                       text="Select file or directory")
+
 #=================================== TABBED CONTRAOL TO HOUSE ACCESS TO INSTRUCTIONS\SETTINGS ========================
 tabControl = ttk.Notebook(main_win)
 tab1 = ttk.Frame(tabControl)
@@ -506,9 +524,10 @@ CreateToolTip(status_label, "Status Bar")
 
 if __name__ == '__main__':
  
-    # 
+    # load app        
     config = ConfigureJson(JSON_FILE, DOWNLOADS_PATH, filetype_combo, filetype_dest_combo, status_label, curr_spath_label, change_spath_label)
-    migrate = FileMigration(JSON_FILE, DOWNLOADS_PATH, status_label)
+    file_browse = FileView(tree_frame, path=load_homepath(), text="Select file or directory")
+    migrate = FileMigration(JSON_FILE, DOWNLOADS_PATH, status_label, config)
     status_report(status_label, " Moves all files by type to pre designated locations.")
     config.load_data()      
     

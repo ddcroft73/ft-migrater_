@@ -64,7 +64,7 @@ def rand_fname(name_list: list) -> str:
 
 # dont allow any duplicates
 def make_filelist(fnames: list, ftypes: list, numfiles: int) -> list:
-    return list(set([rand_fname(fnames) + ftypes[random.randint(0,3)] for _ in range(0,numfiles)]))
+    return list(set([rand_fname(fnames) + ftypes[random.randint(0,2)] for _ in range(0,numfiles)]))
 
 # program acts odd if user adds double os.sep, (as per testing for idiots)
 # create_working_dir() will make weird ass directories
@@ -338,26 +338,27 @@ def parse_args(arg) -> None:
                 case _:
                    # basic default demo
                    doing = 'basic'
-                   start_dir = arg[1] if arg[1].isalpha() else help()
+                   start_dir = arg[1] if not arg[1].isdigit() else help()
                    numfiles = DEF_FILES_NUM     
         case 3:           # user entered 2 arguments,  
             # one is demo path, 2 is either numfiles, or destination path 
             if arg[2].isdigit():
                 doing = 'basic'
-                start_dir = arg[1] if arg[1].isalpha() else help()
-                numfiles = int(arg[2])
+                start_dir = arg[1] if not arg[1].isdigit() else help()
+                numfiles = int(arg[2]) if arg[2].isdigit() else DEF_FILES_NUM
             else:  # path, destPath
                 doing = 'full'    
-                start_dir = arg[1] if arg[1].isalpha() else help()
-                dest_dir = arg[2] 
+                start_dir = arg[1] if not arg[1].isdigit() else help()
+                dest_dir = arg[2] if arg[2].isdigit() else DEF_FILES_NUM
                 numfiles = DEF_FILES_NUM                
         case 4:           # user entered 3 arguments
             # path, numfiles, destination path
+           # print(arg[1].isalpha(),arg[2].isdigit(),arg[3].isalpha())
 
             doing = 'full'
-            start_dir = arg[1] if arg[1].isalpha() else help()
+            start_dir = arg[1]     if not arg[1].isdigit() else help()
             numfiles = int(arg[2]) if arg[2].isdigit() else DEF_FILES_NUM
-            dest_dir = arg[3]  if arg[1].isalpha() else help()
+            dest_dir = arg[3]      if not arg[3].isdigit() else help()
            
         case _:           # user has no idea how to use the demo
             help()    

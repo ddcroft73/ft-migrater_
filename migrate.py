@@ -1,7 +1,7 @@
 # migrate.py
-
-import os
-from configurejson import * 
+#import os
+#import json 
+from configurejson import *
 from datetime import datetime
 import shutil
 
@@ -11,20 +11,25 @@ LOG = "migrate_log.txt"
 Class handles all routines dealing with the movement of files from one directory to 
 another. 
 
+Any file types that are not in the home path, or somehow end up with
+The same From and To paths are ignored. If it doesnt make sense, It shouldnt happen.
+Thats the goal anyway.
+
 """
 
 
 class FileMigration:     
-    def __init__(self, json_fname: str, default_path: str, status: object) -> None:       
+    def __init__(self, json_fname: str, default_path: str, status: object, config_json: ConfigureJson) -> None:       
         self.json_fname = json_fname
         self.default_path = default_path
         self.status = status
         self.spath = default_path
+        self.config_json = config_json
     
-    # the files in the "Home Path" are used as "keys" in a dictionary that contains
+    # the files in the "sort Path" are used as "keys" in a dictionary that contains
     # the destinations of each file, "values". 
     def disperse_files(self) -> None:
-        json_data  = ConfigureJson.get_data(self.json_fname, self.default_path)
+        json_data  = self.config_json.get_data(self.json_fname, self.default_path)
         self.spath =  list(json_data.keys())[0]
         self.key_list = self.__make_keylist(json_data) 
         # if no files match the keys in the json_data dict, nothing to do
@@ -36,7 +41,7 @@ class FileMigration:
             self.__exec_move_instructions(from_to_dict)
    
 
-    # gather files to ceate the dictionary
+    # get all files to be moved
     def __make_keylist(self, json_data: dict) -> list:
         spath = self.spath
         types = list(json_data[spath].keys())        
@@ -51,12 +56,23 @@ class FileMigration:
                 if getfile_ext(item) == key:
                      paths[item] = os.path.join(value, os.path.basename(item))
         return paths
-      
+    
+    # make diretories if single directory, inside existing directory,
+    # or directorys parents and subs
+    def __create_diretories(self, new_path):
+        path = ""
+        dirs = new_path.split(os.sep)        
+        for sub in dirs:
+           path += (sub+os.sep)
+           if not os.path.exists(path):
+               os.mkdir(path)  
+
+      # move em one by one        
     def __exec_move_instructions(self, paths) -> None:
         for _from, _to in paths.items():
             if not os.path.exists(getdir_only(_to)):
                 self.log_move(note=f"Destintation path created:\n{getdir_only(_to)}")
-                os.mkdir(getdir_only(_to))                
+                self.__create_diretories(getdir_only(_to))  
             try:
                 shutil.move(_from ,_to)    
             except Exception as er:
@@ -67,7 +83,7 @@ class FileMigration:
         status_report(self.status, f"{len(self.key_list)} files moved. Check log to confirm.")
         self.log_move(stamp=True) # Stamp with the time and date of move    
     
-    
+    # Keeps track of the actions and stores a text file in the sort path
     def log_move(self, from_path: str=None, to_path=None, stamp: bool=False, note: str=None, do_time: bool=False) -> None:
         now = datetime.now()
         date = now.strftime("%b-%d-%Y") 
