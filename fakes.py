@@ -280,6 +280,7 @@ def deldir() -> None:
 def cleanall() -> None:    
     destroy_demo_files()
     deldir()
+    exit(0)
 
 #   END DEMO REMOVAL CODE ------------------------------------------------------------------------------------------------    
 
