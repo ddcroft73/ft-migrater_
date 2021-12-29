@@ -9,13 +9,13 @@
   - Manage Directories
       - Create - Navigate to the directory with file viewer and select the directory which you want to create a directory in. Type the name in the box next to the 'Create' button. Click 'Create'. THis does not mark the new directory as a destination. See Selecting\Entering a Destination.
       - Remove - Naviagte to the directory you wish to remove, select the name, click 'Delete'. THis action unlike file delete can not be undone.
-
+  - Once a destination has been set for a type of file, that path is added to the destination drop down box and can be used for a quick jump to view that directories contents and may be also selected to save as another destination for a different file type.
 ## Selecting\Entering a File type:
   - The application is ONLY concerend with the files and file types in the Home Path. 
   - Any file can be selected or deleted, but only files in the Home Path can be marked for migration.
   - File types may be selected by clicking on a file that is in the Home path diretory, or by typing the extension into the file type combo box. There does not have to be files of the entered type in the folder at the time. You can set destinations for future file types if you like.
   - Make sure you are in the Home directory and single click any file. THe File extension will be cast  to the file type combo box, and if any instructions have been set, the destination will appear in the destination box. If not it will remain empty. This allows for faster type selection.
-  - Once a destination has been set for a type of file, that destination is added to the destination drop down box and can be used for a quick jump to view that directories contents and may be also selected to save as another destination for a different file type.
+  
   
 ## Selecting\Entering a Destination:
   - To select the destination, navigate to a different directory than the home path, and DOUBLE click the directory name. THe name will be cast to the destination drop down box.
