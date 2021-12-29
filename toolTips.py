@@ -5,7 +5,7 @@ tested with Python27 and Python34  by  vegaseat  09sep2014
 www.daniweb.com/programming/software-development/code/484591/a-tooltip-class-for-tkinter
 Modified to include a delay time by Victor Zaccardo, 25mar16
 
-Modified to include realtime contents by DCroft @HobblinCobbler 22Nov2021
+Modified to include realtime contents by DCroft Dec2021
 """
 import tkinter as tk
 
