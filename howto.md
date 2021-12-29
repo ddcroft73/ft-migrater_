@@ -12,8 +12,8 @@
   if the user decides to change to another home path.
   - Click on the + Plus sign next to directory names to more consistently open directories. Double clicking
   also works but it less responsive.
-  - Click the small button witht the '<' to navigate to the parent of the current directory.
-  - Once a destinatin has been saved, they can be accessed individually from the Destinations combo box. Select a directory from this box to navigate the file view to that directory and it can also be used as a faster way to set the same destination for different type files.
+  - BACK or UP directory Select a directory, click the small button witht the '<' to navigate to the parent of the directory.
+  - Once a destination has been saved, they can be accessed individually from the Destinations combo box. Select a directory from this box to navigate the file view to that directory and it can also be used as a faster way to set the same destination for different type files.
   - Manage Files\Directories
      - Delete directory- Navigate to the directory you want to delete, select it, click Delete. This action cannot be undone. 
      - Delete File (Recycle Bin) Select the file you want to remove and click Delete.
