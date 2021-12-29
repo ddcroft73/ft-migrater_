@@ -1,6 +1,6 @@
 # migrate.py
 #import os
-#import json 
+#import json   # not sure if these need to be imported on every file if they are imported and have access to already. seems to work
 from configurejson import *
 from datetime import datetime
 import shutil
@@ -10,10 +10,6 @@ LOG = "migrate_log.txt"
 """ class Migration-
 Class handles all routines dealing with the movement of files from one directory to 
 another. 
-
-Any file types that are not in the home path, or somehow end up with
-The same From and To paths are ignored. If it doesnt make sense, It shouldnt happen.
-Thats the goal anyway.
 
 """
 
@@ -26,10 +22,10 @@ class FileMigration:
         self.spath = default_path
         self.config_json = config_json
     
-    # the files in the "sort Path" are used as "keys" in a dictionary that contains
+    # the files in the "sort\home Path" are used as "keys" in a dictionary that contains
     # the destinations of each file, "values". 
     def disperse_files(self) -> None:
-        json_data  = self.config_json.get_data(self.json_fname, self.default_path)
+        json_data: str = self.config_json.get_data(self.json_fname, self.default_path)
         self.spath =  list(json_data.keys())[0]
         self.key_list = self.__make_keylist(json_data) 
         # if no files match the keys in the json_data dict, nothing to do
@@ -37,20 +33,20 @@ class FileMigration:
             status_report(self.status, "No relevant file types found.\nNothing to do") 
             self.log_move(note=" Files not found, attempted move at", do_time=True)             
         else:
-            from_to_dict = self.__construct_dict(json_data)
+            from_to_dict: dict = self.__construct_dict(json_data)
             self.__exec_move_instructions(from_to_dict)
    
 
     # get all files to be moved
     def __make_keylist(self, json_data: dict) -> list:
-        spath = self.spath
-        types = list(json_data[spath].keys())        
+        spath: str = self.spath
+        types: list = list(json_data[spath].keys())        
         return [os.path.join(spath,file) for file in os.listdir(spath) if getfile_ext(file) in types and file != LOG]
     
     # make a dict to guide the migration key = From : Value = To
     def __construct_dict(self, json_data: dict) -> dict:
-        paths = {}
-        spath = self.spath
+        paths: dict = {}
+        spath: str = self.spath
         for item in self.key_list:
             for key, value in json_data[spath].items(): 
                 if getfile_ext(item) == key:
@@ -60,8 +56,8 @@ class FileMigration:
     # make diretories if single directory, inside existing directory,
     # or directorys parents and subs
     def __create_diretories(self, new_path):
-        path = ""
-        dirs = new_path.split(os.sep)        
+        path: str = ""
+        dirs: list = new_path.split(os.sep)        
         for sub in dirs:
            path += (sub+os.sep)
            if not os.path.exists(path):
@@ -86,9 +82,9 @@ class FileMigration:
     # Keeps track of the actions and stores a text file in the sort path
     def log_move(self, from_path: str=None, to_path=None, stamp: bool=False, note: str=None, do_time: bool=False) -> None:
         now = datetime.now()
-        date = now.strftime("%b-%d-%Y") 
-        time = now.strftime("%H:%M:%S") 
-        fname = os.path.join(self.spath, LOG)
+        date: str = now.strftime("%b-%d-%Y") 
+        time: str = now.strftime("%H:%M:%S") 
+        fname: str = os.path.join(self.spath, LOG)
         
         if from_path and to_path:
             output = f"\nMOVED:  {os.path.basename(from_path)} \nFROM:   {getdir_only(from_path)}  \nTO:     {getdir_only(to_path)}"
