@@ -1,6 +1,11 @@
-# ft-migrater_
 
-A simple file migration app with GUI. Given a directory full of different files, exports the  files across the computer using destinations set by the user. This application was created for a specific user due to the needto constantly move and sift through the files in changing folders populated by different scraper\file downloaders. It  allows you to view what files have been downloaded, delete any trash, and move them in bulk as needed. Ability to add\ delete support for new or old file types.
+![](ft-migrater3_crop(2).png)<br><br>
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+
+# ft-migrater_   File Type Migration Tool
+
+A simple file migration app. Given a directory full of different files, exports the  files across the computer using destinations set by the user. This application was created for a specific user due to the needto constantly move and sift through the files in changing folders populated by different scraper\file downloaders. It  allows you to view what files have been downloaded, delete any trash, and move them in bulk as needed. Ability to add\ delete support for new or old file types.
 
 Made on win 10 with python 3.10
        
