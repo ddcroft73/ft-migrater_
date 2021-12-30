@@ -159,7 +159,7 @@ def demo_report() -> None:
         print(f"Traces of previous demo found in: \n{home}")
     else:
         print(f"Traces of previous demo found in: \n{home}\n{dest}") 
-    print("Run 'fakes --dir' to remove demo, Or delete the log and the directories above.")               
+    print("Run 'demo --dir' to remove demo, Or delete the log and the directories above.")               
 
 #DEMO REMOVAL ROUTINES --------------------------------------------------------------------------------
 
