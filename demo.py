@@ -32,7 +32,7 @@ def getfile_ext(fname: str) -> str:
 
 # Sets up Basic Demonstration
 def create_demo(working_dir: str, num_files: int) -> None:
-    file_names = ['-never_gonna', '-give_you', '-up_never', '-gonna_let', '-you_go', '-nevvvaa', "-random"]
+    file_names = ['-nothing-here', '-fake-files', '-demo-use', '-empty', '-files', '-blank', "-random"]
     file_types = [".htmx", ".cpq", ".pdg", ".txq", ".nyet", ".rand"]
     
     file_list =  make_filelist(file_names, file_types, num_files)
