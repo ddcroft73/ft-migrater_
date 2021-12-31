@@ -1,4 +1,4 @@
-#  fakes.py
+#  demo.py
 #
 # generate an array of fake files to demo ft-migrater.
 #   Creates Start\Home path directories and fake files for the purpose of demonstrating ft-migrater. 
