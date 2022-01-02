@@ -13,10 +13,10 @@
 
 ---
 ~~~
-Usage:  --flag<homepath> <numfiles> <destinationpath>
+Usage:  demo.py <homepath> <numfiles> <destinationpath>
 
    Fluff for demo:
-       C:\home\path 100 C:\Destination\path
+       demo.py C:\home\path 100 C:\Destination\path
        
        <homepath>         Required
        <numfiles>         May be omitted. Default is 10
@@ -25,6 +25,7 @@ Usage:  --flag<homepath> <numfiles> <destinationpath>
                           and deleted.
     
    Cleanup:
+       demo.py <option>
        --cleanall    Delete all demo files.
                      Delete home path.
                      Delete demo log.
