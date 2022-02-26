@@ -1,9 +1,10 @@
 # migrate.py
-#import os
+import os
 #import json 
-from configurejson import *
+from configurejson import ConfigureJson
 from datetime import datetime
 import shutil
+from tkinter.messagebox import showinfo
 
 LOG = "migrate_log.txt" 
 
@@ -12,6 +13,14 @@ Class handles all routines dealing with the movement of files from one directory
 another. 
 
 """
+def getdir_only(fname: str) -> str:
+    return '\\'.join(fname.split('\\')[0:-1])
+
+def getfile_ext(fname: str) -> str:         
+    return fname.split(".")[-1]  
+
+def status_report(status: object, report: str) -> None:
+    status.configure(text=report)
 
 
 class FileMigration:     

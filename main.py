@@ -41,10 +41,13 @@ from tkinter.messagebox import showinfo, askquestion
 from send2trash import send2trash
 import shutil
 
+import json
+import os
+
 # required classes
-from configurejson import *
+from configurejson import ConfigureJson
 from toolTips import CreateToolTip
-from migrate import *
+from migrate import FileMigration
   
 # Refactor all code to use pathlib instead of os... or maybe just use it next time  
 DOWNLOADS_PATH = os.path.join(os.getenv('USERPROFILE'), 'Downloads') 
@@ -53,6 +56,15 @@ JSON_FILE = './instructions.json'
 #----------------------------------------------------------------------------------------
 #  COMMAND BUTT0N EVENT FUNCTIONS
 #----------------------------------------------------------------------------------------
+def getdir_only(fname: str) -> str:
+    return '\\'.join(fname.split('\\')[0:-1])
+
+def getfile_ext(fname: str) -> str:         
+    return fname.split(".")[-1]  
+
+def status_report(status: object, report: str) -> None:
+    status.configure(text=report)
+
 def del_file(path: str) -> None:
     cont = ""
     cont =askquestion("Send to Recycle Bin", f"Are you are sure you want to delete: {path}\n\nContinue?", icon='question') 

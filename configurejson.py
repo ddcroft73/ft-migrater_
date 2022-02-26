@@ -4,7 +4,7 @@ import json
 import os
 from tkinter.messagebox import askquestion, showinfo
 
-# a couple utility functions, no need for a class since importing this module to all files anyway...
+# a couple utility functions
 def getdir_only(fname: str) -> str:
     return '\\'.join(fname.split('\\')[0:-1])
 
